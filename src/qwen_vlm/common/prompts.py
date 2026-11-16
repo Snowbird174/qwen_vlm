@@ -6,6 +6,8 @@ record it in run manifests.
 
 from __future__ import annotations
 
+import json
+
 from qwen_vlm.common.categories import CATEGORY_IDS, NAME_ZH, normalize_required_items
 
 PROMPT_VERSION = "v1"
@@ -42,6 +44,16 @@ def presence_user_prompt(target_item: str, question_zh: str) -> str:
         f"只判断器材 {target_item}（{NAME_ZH[target_item]}），严格按以下格式输出："
         f'{{"item": "{target_item}", "state": "present|absent|unknown"}}'
     )
+
+
+def checklist_target_text(item_states: dict[str, str]) -> str:
+    """Canonical assistant answer for the main task (training target)."""
+    return json.dumps({"item_states": {c: item_states[c] for c in CATEGORY_IDS}}, ensure_ascii=False)
+
+
+def presence_target_text(target_item: str, state: str) -> str:
+    """Canonical assistant answer for the auxiliary presence task (training target)."""
+    return json.dumps({"item": target_item, "state": state}, ensure_ascii=False)
 
 
 def build_messages(user_text: str, image) -> list[dict]:
