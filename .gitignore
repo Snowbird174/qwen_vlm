@@ -1,0 +1,17 @@
+envs/
+cache/
+work/
+vendor/
+artifacts/base/Qwen3-VL-2B-Instruct/
+artifacts/adapters/
+artifacts/merged/
+artifacts/quantized/
+release/
+data/raw/
+runs/**/*.safetensors
+runs/**/*.gguf
+runs/**/checkpoint-*/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/

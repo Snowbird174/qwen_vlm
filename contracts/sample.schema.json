@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "qwen_vlm/sample.schema.json",
+  "title": "One annotated sample (one image + one question) in a data JSONL file",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sample_id", "image_path", "session_id", "scene_group_id", "pair_group_id",
+    "task", "required_items", "question_zh", "item_states", "condition_tags",
+    "hard_negative_tags", "unknown_reason", "source", "annotation_verified"
+  ],
+  "properties": {
+    "sample_id": {"type": "string", "minLength": 1},
+    "image_path": {"type": "string", "description": "Relative to $QWEN_VLM_ROOT/data/"},
+    "session_id": {"type": "string"},
+    "scene_group_id": {"type": "string", "description": "Split unit; all samples of a layout share it"},
+    "pair_group_id": {"type": ["string", "null"], "description": "Images differing by exactly one moved item share it"},
+    "task": {"type": "string", "enum": ["checklist", "presence"], "description": "checklist = main 5-state JSON task; presence = auxiliary single-item question"},
+    "target_item": {"$ref": "#/$defs/category", "description": "Required when task == presence"},
+    "required_items": {
+      "type": "array", "items": {"$ref": "#/$defs/category"}, "uniqueItems": true
+    },
+    "question_zh": {"type": "string", "minLength": 1},
+    "item_states": {
+      "type": "object", "additionalProperties": false,
+      "required": ["screwdriver", "pliers", "cable_bundle", "multimeter", "hammer"],
+      "properties": {
+        "screwdriver": {"$ref": "#/$defs/state"},
+        "pliers": {"$ref": "#/$defs/state"},
+        "cable_bundle": {"$ref": "#/$defs/state"},
+        "multimeter": {"$ref": "#/$defs/state"},
+        "hammer": {"$ref": "#/$defs/state"}
+      }
+    },
+    "condition_tags": {"type": "array", "items": {"type": "string"}},
+    "hard_negative_tags": {"type": "array", "items": {"type": "string"}},
+    "unknown_reason": {
+      "type": "object",
+      "description": "category id -> reason string; must cover exactly the categories labelled unknown",
+      "additionalProperties": {"type": "string"}
+    },
+    "source": {"type": "string", "enum": ["real_lab", "synthetic_smoke", "synthetic_edit", "teacher_generated"]},
+    "annotation_verified": {"type": "boolean"}
+  },
+  "allOf": [
+    {"if": {"properties": {"task": {"const": "presence"}}}, "then": {"required": ["target_item"]}}
+  ],
+  "$defs": {
+    "category": {"type": "string", "enum": ["screwdriver", "pliers", "cable_bundle", "multimeter", "hammer"]},
+    "state": {"type": "string", "enum": ["present", "absent", "unknown"]}
+  }
+}

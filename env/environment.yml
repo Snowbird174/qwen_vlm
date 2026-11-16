@@ -1,0 +1,39 @@
+# Main project environment (training / inference / evaluation / demo).
+#
+# How it was actually built on the course server (2026-11-16): the outbound network was
+# ~30-50 KB/s, so instead of downloading torch the env was cloned offline from the existing
+# server env and topped up with small pip packages:
+#
+#   source env/activate.sh
+#   export CONDA_PKGS_DIRS="$QWEN_VLM_ROOT/cache/conda_pkgs,/opt/conda/pkgs"
+#   conda create -y --offline -p envs/qwen_vlm --clone /opt/conda/envs/lerobot
+#   envs/qwen_vlm/bin/pip install -e . peft jsonschema matplotlib imagehash qwen-vl-utils pytest gradio
+#
+# Exact resolved versions: env/environment.lock.yml and env/pip_freeze_qwen_vlm.txt.
+# On a machine with normal network, the equivalent fresh install is:
+#   conda env create -p envs/qwen_vlm -f env/environment.yml && envs/qwen_vlm/bin/pip install -e .
+name: qwen_vlm
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - torch==2.11.0
+      - torchvision==0.26.0
+      - transformers==5.5.4
+      - accelerate==1.15.0
+      - peft==0.21.3
+      - qwen-vl-utils==0.0.14
+      - datasets
+      - jsonschema
+      - pandas
+      - numpy
+      - scipy
+      - matplotlib
+      - opencv-python-headless
+      - pillow
+      - imagehash
+      - gradio
+      - pytest
+      - pyyaml

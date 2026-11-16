@@ -1,0 +1,35 @@
+# Frozen category table. Only the main agent may change this file.
+# Order is significant: it is the canonical order used in prompts, JSON output and reports.
+version: 1
+categories:
+  - id: screwdriver
+    name_zh: 螺丝刀
+    aliases_zh: [螺丝刀, 起子, 改锥]
+    note: 不区分一字/十字
+  - id: pliers
+    name_zh: 钳子
+    aliases_zh: [钳子, 老虎钳, 尖嘴钳, 斜口钳]
+    note: 不区分钳子类型
+  - id: cable_bundle
+    name_zh: 线缆
+    aliases_zh: [线缆, 电线, 导线, 一束线]
+    note: 独立收卷的一束线缆；万用表表笔线属于万用表附件，不算线缆
+  - id: multimeter
+    name_zh: 万用表
+    aliases_zh: [万用表, 数字万用表, 电表]
+    note: 整件器材识别，不读数
+  - id: hammer
+    name_zh: 锤子
+    aliases_zh: [锤子, 榔头, 铁锤]
+    note: ""
+states:
+  - id: present
+    name_zh: 在
+    definition: 当前画面有足够证据确认该类器材存在于检查区域
+  - id: absent
+    name_zh: 缺失
+    definition: 检查区域足够完整、可观察，有足够证据确认该类器材未出现
+  - id: unknown
+    name_zh: 无法确认
+    definition: 遮挡、画面缺失、模糊或辨识歧义导致无法确认
+decisions: [complete, incomplete, unknown]

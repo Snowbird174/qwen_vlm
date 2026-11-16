@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "qwen_vlm/item_states.schema.json",
+  "title": "Model output: per-category three-state judgement",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["item_states"],
+  "properties": {
+    "item_states": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["screwdriver", "pliers", "cable_bundle", "multimeter", "hammer"],
+      "properties": {
+        "screwdriver": {"$ref": "#/$defs/state"},
+        "pliers": {"$ref": "#/$defs/state"},
+        "cable_bundle": {"$ref": "#/$defs/state"},
+        "multimeter": {"$ref": "#/$defs/state"},
+        "hammer": {"$ref": "#/$defs/state"}
+      }
+    }
+  },
+  "$defs": {
+    "state": {"type": "string", "enum": ["present", "absent", "unknown"]}
+  }
+}

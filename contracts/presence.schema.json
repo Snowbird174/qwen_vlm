@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "qwen_vlm/presence.schema.json",
+  "title": "Model output for the auxiliary single-item presence task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["item", "state"],
+  "properties": {
+    "item": {"type": "string", "enum": ["screwdriver", "pliers", "cable_bundle", "multimeter", "hammer"]},
+    "state": {"type": "string", "enum": ["present", "absent", "unknown"]}
+  }
+}

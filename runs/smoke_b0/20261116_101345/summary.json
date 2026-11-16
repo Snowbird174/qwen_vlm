@@ -1,0 +1,39 @@
+{
+  "model_load_s": 1.7303767311386764,
+  "max_pixels_to_tokens": {
+    "147456": {
+      "image_pad_tokens": 130,
+      "grid_tokens": 130,
+      "grid_thw": [
+        1,
+        20,
+        26
+      ]
+    },
+    "262144": {
+      "image_pad_tokens": 234,
+      "grid_tokens": 234,
+      "grid_thw": [
+        1,
+        26,
+        36
+      ]
+    },
+    "589824": {
+      "image_pad_tokens": 540,
+      "grid_tokens": 540,
+      "grid_thw": [
+        1,
+        40,
+        54
+      ]
+    }
+  },
+  "first_step_logit_maxabs_diff_vs_gray": 5.1875,
+  "parse_status": [
+    "ok",
+    "ok",
+    "ok"
+  ],
+  "peak_gpu_mem_gib": 4.183180332183838
+}
