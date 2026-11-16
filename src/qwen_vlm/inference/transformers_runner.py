@@ -71,8 +71,10 @@ class TransformersRunner(Runner):
             tokenize=True,
             add_generation_prompt=True,
             return_dict=True,
-            return_tensors="pt",
-            images_kwargs={"size": {"longest_edge": self.max_pixels, "shortest_edge": self.min_pixels}},
+            processor_kwargs={
+                "return_tensors": "pt",
+                "images_kwargs": {"size": {"longest_edge": self.max_pixels, "shortest_edge": self.min_pixels}},
+            },
         ).to(self.device)
 
     @torch.inference_mode()

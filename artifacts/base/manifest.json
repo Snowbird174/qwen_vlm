@@ -4,9 +4,9 @@
   "local_path": "/root/gpufree-data/qwen_vlm/artifacts/base/Qwen3-VL-2B-Instruct",
   "weights_source": "modelscope.cn (Qwen/Qwen3-VL-2B-Instruct), verified against HF LFS sha256",
   "small_files_source": "hf-mirror.com at the pinned revision",
-  "verified_at": "2026-11-16T10:13:41+0800",
+  "verified_at": "2026-11-16T13:41:30+0800",
   "total_bytes": 4266647442,
-  "disk_free_bytes_after": 19108728832,
+  "disk_free_bytes_after": 19119525888,
   "files": [
     {
       "name": "README.md",

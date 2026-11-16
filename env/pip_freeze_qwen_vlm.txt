@@ -135,7 +135,7 @@ pytz==2026.6
 PyWavelets==1.10.0
 PyYAML==6.0.3
 qwen-vl-utils==0.0.14
-# Editable install with no version control (qwen_vlm==0.1.0)
+# Editable Git install with no remote (qwen_vlm==0.1.0)
 -e /root/gpufree-data/qwen_vlm
 referencing==0.37.0
 regex==2026.9.29
