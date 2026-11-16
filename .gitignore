@@ -15,3 +15,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 *.egg-info/
+runs/**/checkpoints/
+runs/**/adapter/
+runs/**/logs/*.log
+*.gguf

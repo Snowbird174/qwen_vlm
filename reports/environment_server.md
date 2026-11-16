@@ -47,7 +47,7 @@
 | 环境 | 路径 | 构建方式 | 关键版本 |
 | --- | --- | --- | --- |
 | 主环境 | `envs/qwen_vlm` | 从 `/opt/conda/envs/lerobot` 离线克隆，再用 pip 补装小包 | Python 3.12.16，torch 2.11.0+cu130，cuDNN 9.19，transformers 5.5.4，peft 0.21.3，accelerate 1.15.0 |
-| 转换环境 | `envs/gguf` | 用本地 conda 包缓存离线创建 | Python 3.11.18（llama.cpp 转换依赖由部署 agent 安装） |
+| 转换环境 | `envs/gguf` | 用本地 conda 包缓存离线创建 | Python 3.11.18，只有 pip；**目前未使用**：GGUF 转换实际在 `envs/qwen_vlm` 中运行（关闭 CUDA），因为给 `envs/gguf` 装 CPU 版 torch 需要约 1.5-2GB 磁盘 |
 
 版本精确锁定见 `env/environment.lock.yml` 和 `env/pip_freeze_*.txt`。偏离原计划的地方：原计划写的是 Python 3.11 加全新安装 torch cu128，因为网络太慢改成了克隆；transformers 5.x 已原生支持 Qwen3-VL。
 

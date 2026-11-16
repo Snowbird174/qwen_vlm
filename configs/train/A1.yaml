@@ -1,0 +1,7 @@
+# A1：去掉成对辅助任务。其余与 M 相同。
+experiment_id: A1
+mix:
+  include_unknown: true
+  aux_presence: none
+  hard_negative_weight: 3.0
+  balance_states: true

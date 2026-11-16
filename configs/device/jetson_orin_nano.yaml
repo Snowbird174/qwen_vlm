@@ -1,0 +1,15 @@
+# 目标板。本文件只描述假设，不包含实测数字。
+name: jetson_orin_nano_8gb
+assumed_software:
+  jetpack: "6.x"
+  l4t: R36
+  cuda: "12.6"
+  python: "3.10"
+compute_capability: sm_87
+cmake_cuda_architectures: "87"
+unified_memory_gb: 8
+llamacpp_build_flags:
+  - -DGGML_CUDA=ON
+  - -DCMAKE_CUDA_ARCHITECTURES=87
+  - -DLLAMA_CURL=OFF
+note: 脚本不使用 sudo，也不改 nvpmodel / jetson_clocks。性能数字待用户在板上跑完后回传。

@@ -1,0 +1,7 @@
+# M：完整监督微调。成对 presence、困难样本权重 3、按（类别, 状态）均衡，并保留 unknown。
+experiment_id: M
+mix:
+  include_unknown: true
+  aux_presence: pairs
+  hard_negative_weight: 3.0
+  balance_states: true

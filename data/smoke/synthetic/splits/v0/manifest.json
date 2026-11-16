@@ -1,0 +1,52 @@
+{
+  "manifest_version": 1,
+  "name": "v0",
+  "created_at": "2026-11-16T13:57:58+08:00",
+  "seed": 0,
+  "source_jsonl": "data/smoke/synthetic/samples.jsonl",
+  "source_sha256": "aeb100623a9e8b0f79b5bc6d54b606a4affe0afe17755643fadcef80583956b7",
+  "params": {
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15,
+    "holdout_sessions": [],
+    "split_unit": "scene_group_id；共用 pair_group_id 的场景组合并",
+    "phash_threshold": 8
+  },
+  "warnings": [],
+  "files": {
+    "train": {
+      "path": "train.jsonl",
+      "sha256": "b74fd89473f11af705dc622eecdddfb53187afb92c6290f7b55e10699218946b",
+      "num_samples": 48,
+      "num_scene_groups": 6,
+      "scene_group_ids": [
+        "s01_l002",
+        "s01_l003",
+        "s02_l001",
+        "s02_l002",
+        "s02_l003",
+        "s03_l002"
+      ]
+    },
+    "val": {
+      "path": "val.jsonl",
+      "sha256": "9d94893101c96fa44c2287fdedb9a44e56ad3ee1294244f05b38c3b774c6bf77",
+      "num_samples": 15,
+      "num_scene_groups": 2,
+      "scene_group_ids": [
+        "s01_l001",
+        "s03_l003"
+      ]
+    },
+    "test": {
+      "path": "test.jsonl",
+      "sha256": "7d204e755bb41fe95fa7537bcea3390f08c424967d738496ad801b37cd70ce2d",
+      "num_samples": 9,
+      "num_scene_groups": 1,
+      "scene_group_ids": [
+        "s03_l001"
+      ]
+    }
+  }
+}

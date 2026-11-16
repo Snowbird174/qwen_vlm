@@ -1,0 +1,29 @@
+# 合成数据上的过拟合冒烟。大约 30 步，前 2 步把学习率从 0 拉到 2e-4，之后保持不变。
+# dropout 置 0、只取前 4 条，是为了在这 30 步里看见 loss 下降，不是正式配置。
+experiment_id: train_smoke
+export_adapter_dir: artifacts/adapters/smoke
+cache_encodings: true
+smoke_check: true
+save_steps: 15
+save_total_limit: 2
+
+data:
+  max_samples: 4
+
+lora:
+  dropout: 0.0
+
+optim:
+  lr: 0.0002
+  lr_scheduler: constant_with_warmup
+  warmup_steps: 2
+  max_steps: 30
+  grad_accum_steps: 1
+
+mix:
+  include_unknown: true
+  aux_presence: pairs
+  aux_ratio: 1.0
+  hard_negative_weight: 1.0
+  balance_states: false
+  epoch_size: null

@@ -1,0 +1,2 @@
+session_id,layout_id,variant_id,image_path,pair_group_id,screwdriver,pliers,cable_bundle,multimeter,hammer,unknown_reason,condition_tags,hard_negative_tags,annotation_verified,notes
+20261116b01,l001,v01,raw/20261116b01/l001/v01.jpg,20261116b01_l001_p01,present,absent,present,unknown,present,multimeter=被纸挡住机身，无法确认,lighting_warm|baseline,,false,示例行：正式标注前删除或改成真实照片。session/layout/variant 不要含下划线；文件名不要写 present/absent 或类别名。

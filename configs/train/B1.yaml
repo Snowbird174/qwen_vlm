@@ -1,0 +1,7 @@
+# B1：普通 LoRA。保留 unknown，不生成成对 presence，困难样本权重为 1，不做状态均衡。
+experiment_id: B1
+mix:
+  include_unknown: true
+  aux_presence: none
+  hard_negative_weight: 1.0
+  balance_states: false

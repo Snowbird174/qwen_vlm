@@ -1,0 +1,46 @@
+{
+  "note": "只说明这几条训练样本被拟合过，不是准确率。",
+  "vision_logits_max_abs_diff": 48.75,
+  "loss_first": 0.566580057144165,
+  "loss_last": 0.11967533081769943,
+  "samples": [
+    {
+      "sample_id": "s01_l002_v02_q01",
+      "task": "checklist",
+      "target": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"absent\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "before": "```json\n{\n  \"item_states\": {\n    \"screwdriver\": \"absent\",\n    \"pliers\": \"absent\",\n    \"cable_bundle\": \"absent\",\n    \"multimeter\": \"present\",\n    \"hammer\": \"present\"\n  }\n}\n```",
+      "before_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 4,
+        "n_fields": 5
+      },
+      "after": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "after_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 4,
+        "n_fields": 5
+      },
+      "text_changed": true
+    },
+    {
+      "sample_id": "s01_l002_v01_q01",
+      "task": "checklist",
+      "target": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "before": "```json\n{\n  \"item_states\": {\n    \"screwdriver\": \"unknown\",\n    \"pliers\": \"unknown\",\n    \"cable_bundle\": \"unknown\",\n    \"multimeter\": \"present\",\n    \"hammer\": \"present\"\n  }\n}\n```",
+      "before_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 2,
+        "n_fields": 5
+      },
+      "after": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "after_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 5,
+        "n_fields": 5
+      },
+      "text_changed": true
+    }
+  ],
+  "peak_gpu_memory_allocated_bytes": 5674050048,
+  "peak_gpu_memory_reserved_bytes": 5909774336
+}

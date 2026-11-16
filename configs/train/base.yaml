@@ -1,0 +1,50 @@
+# 共享超参。B1 / M / A1 / A2 / A3 只覆盖 experiment_id 和 mix。
+# max_steps 先放一个各实验相同的占位值，正式开训前按数据和显存再改。
+experiment_id: base
+seed: 42
+model_dir: artifacts/base/Qwen3-VL-2B-Instruct
+
+data:
+  root: data
+  train_jsonl: data/smoke/synthetic/splits/v0/train.jsonl
+  val_jsonl: data/smoke/synthetic/splits/v0/val.jsonl
+  manifest: null
+  max_samples: null
+
+pixels:
+  # 最长边、最短边都是像素面积，不是边长。512*512 已在推理侧对上 234 个视觉 token。
+  max_pixels: 262144
+  min_pixels: 65536
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+
+optim:
+  lr: 0.0001
+  weight_decay: 0.0
+  lr_scheduler: cosine
+  warmup_steps: null
+  warmup_ratio: 0.03
+  max_steps: 1000
+  micro_batch_size: 1
+  grad_accum_steps: 16
+  max_grad_norm: 1.0
+  gradient_checkpointing: true
+  bf16: true
+
+save_steps: 200
+save_total_limit: 2
+cache_encodings: false
+smoke_check: false
+max_new_tokens: 128
+
+# 下面这份 mix 与 B1 相同。M / A 系列在各自 yaml 里覆盖。
+mix:
+  include_unknown: true
+  aux_presence: none
+  aux_ratio: 1.0
+  hard_negative_weight: 1.0
+  balance_states: false
+  epoch_size: null

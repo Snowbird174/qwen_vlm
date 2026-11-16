@@ -1,0 +1,77 @@
+# 问法集合与清单组合池。
+# default：训练和正式样本默认使用这一组。
+# test_only：测试专用问法。转换时必须显式传入 --question-set test_only 才会用到，
+# 不要把它生成的样本混进训练集。测试问法都以「【测试问法】」开头。
+version: 1
+
+defaults:
+  question_set: default
+  checklists_per_image: 2
+  presence_per_image: 0
+  seed: 0
+
+question_sets:
+  default:
+    checklist_questions:
+      - 请检查画面中本次所需的器材是否齐全。
+      - 所需器材都在检查区域内吗？请逐类判断。
+      - 对照所需清单，看一看还缺什么。
+      - 这些实验要用的器材有没有备齐？
+      - 请确认所需器材是否都出现在台面上。
+      - 帮我看一下清单上的器材齐不齐。
+      - 开始实验前，所需的这几样东西都在吗？
+      - 请只根据画面判断所需器材是否备齐，不要猜测被挡住的部分。
+    presence_questions:
+      - 画面里有{name}吗？
+      - 检查区域内能确认有{name}吗？
+      - "{name}在不在这张台面照片里？"
+      - 请判断{name}是否出现在检查区域。
+      - 只看{name}这一类，它在画面中吗？
+      - 台面上能不能找到{name}？
+    # 五类里全部 2、3、4 元组合，顺序与类别表一致。不要放入 1 个或 5 个。
+    checklist_pools:
+      - [screwdriver, pliers]
+      - [screwdriver, cable_bundle]
+      - [screwdriver, multimeter]
+      - [screwdriver, hammer]
+      - [pliers, cable_bundle]
+      - [pliers, multimeter]
+      - [pliers, hammer]
+      - [cable_bundle, multimeter]
+      - [cable_bundle, hammer]
+      - [multimeter, hammer]
+      - [screwdriver, pliers, cable_bundle]
+      - [screwdriver, pliers, multimeter]
+      - [screwdriver, pliers, hammer]
+      - [screwdriver, cable_bundle, multimeter]
+      - [screwdriver, cable_bundle, hammer]
+      - [screwdriver, multimeter, hammer]
+      - [pliers, cable_bundle, multimeter]
+      - [pliers, cable_bundle, hammer]
+      - [pliers, multimeter, hammer]
+      - [cable_bundle, multimeter, hammer]
+      - [screwdriver, pliers, cable_bundle, multimeter]
+      - [screwdriver, pliers, cable_bundle, hammer]
+      - [screwdriver, pliers, multimeter, hammer]
+      - [screwdriver, cable_bundle, multimeter, hammer]
+      - [pliers, cable_bundle, multimeter, hammer]
+
+  test_only:
+    checklist_questions:
+      - 【测试问法】请只依据画面判断所需器材是否已经备齐。
+      - 【测试问法】实验开始前，所需器材是否都在检查区域内？
+      - 【测试问法】如果有缺失或看不清，请在对应类别上标出来。
+      - 【测试问法】这张台面照片里，清单上的器材齐不齐？
+    presence_questions:
+      - 【测试问法】只看这一类：{name}是否在画面中？
+      - 【测试问法】请单独确认{name}的有无。
+      - 【测试问法】不要看其他器材，{name}在不在？
+    checklist_pools:
+      - [screwdriver, hammer]
+      - [pliers, multimeter]
+      - [cable_bundle, hammer]
+      - [screwdriver, pliers, cable_bundle]
+      - [pliers, multimeter, hammer]
+      - [screwdriver, cable_bundle, multimeter, hammer]
+      - [pliers, cable_bundle, multimeter, hammer]
+      - [screwdriver, pliers, multimeter]

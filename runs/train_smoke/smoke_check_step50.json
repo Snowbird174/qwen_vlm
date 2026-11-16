@@ -1,0 +1,51 @@
+{
+  "note": "step50 是续训后的冒烟对照，不是准确率。before/step30 来自第一次 30 步结束时的生成。",
+  "samples": [
+    {
+      "sample_id": "s01_l002_v01_q01",
+      "target": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "before": "```json\n{\n  \"item_states\": {\n    \"screwdriver\": \"unknown\",\n    \"pliers\": \"unknown\",\n    \"cable_bundle\": \"unknown\",\n    \"multimeter\": \"present\",\n    \"hammer\": \"present\"\n  }\n}\n```",
+      "before_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 2,
+        "n_fields": 5
+      },
+      "after_step30": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "after_step30_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 5,
+        "n_fields": 5
+      },
+      "after_step50": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "after_step50_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 5,
+        "n_fields": 5
+      },
+      "text_changed_from_before": true
+    },
+    {
+      "sample_id": "s01_l002_v02_q01",
+      "target": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"absent\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "before": "```json\n{\n  \"item_states\": {\n    \"screwdriver\": \"absent\",\n    \"pliers\": \"absent\",\n    \"cable_bundle\": \"absent\",\n    \"multimeter\": \"present\",\n    \"hammer\": \"present\"\n  }\n}\n```",
+      "before_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 4,
+        "n_fields": 5
+      },
+      "after_step30": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "after_step30_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 4,
+        "n_fields": 5
+      },
+      "after_step50": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"absent\", \"cable_bundle\": \"absent\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+      "after_step50_overlap": {
+        "parse_status": "ok",
+        "matched_fields": 5,
+        "n_fields": 5
+      },
+      "text_changed_from_before": true
+    }
+  ]
+}

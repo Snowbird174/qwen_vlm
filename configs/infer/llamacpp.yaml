@@ -1,0 +1,33 @@
+# llama.cpp 推理的像素档。服务进程启动时生效，改档要重启 llama-server。
+version: 1
+patch_size: 16
+merge_size: 2
+pixels_per_token: 1024
+min_pixels: 65536
+min_tokens: 64
+decoding:
+  temperature: 0
+  max_new_tokens: 128
+server_flags:
+  jinja: true
+  n_ctx: 4096
+  n_batch: 2048
+  n_ubatch: 2048
+  note: n_ubatch 设为 2048，这样即使用户端把视觉 token 上限截到 n_ubatch/2，768² 的 576 token 仍然放得下。
+tiers:
+  - id: "384"
+    max_pixels: 147456
+    image_max_tokens: 144
+  - id: "512"
+    max_pixels: 262144
+    image_max_tokens: 256
+  - id: "768"
+    max_pixels: 589824
+    image_max_tokens: 576
+expected_tokens_for_1280x960:
+  "384": 130
+  "512": 234
+  "768": 540
+expected_note: >
+  上述 token 数来自与 Transformers 相同的 smart_resize，对 1280×960 的图在三档上已手算核对。
+  llama.cpp 是否真的给出同样的视觉 token，以 runs/deploy_smoke/resolution_check.json 的实测为准。

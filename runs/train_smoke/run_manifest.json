@@ -1,0 +1,158 @@
+{
+  "experiment_id": "train_smoke",
+  "git": {
+    "commit": "30b929c5e51a462fc8d04dd511864c54328aeafa",
+    "dirty": true,
+    "note": "dirty"
+  },
+  "base_model_dir": "/root/gpufree-data/qwen_vlm/artifacts/base/Qwen3-VL-2B-Instruct",
+  "base_model_revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+  "prompt_version": "v1",
+  "data": {
+    "train_jsonl": "/root/gpufree-data/qwen_vlm/data/smoke/synthetic/splits/v0/train.jsonl",
+    "train_jsonl_sha256": "b74fd89473f11af705dc622eecdddfb53187afb92c6290f7b55e10699218946b",
+    "val_jsonl": "/root/gpufree-data/qwen_vlm/data/smoke/synthetic/splits/v0/val.jsonl",
+    "val_jsonl_sha256": "9d94893101c96fa44c2287fdedb9a44e56ad3ee1294244f05b38c3b774c6bf77",
+    "data_root": "/root/gpufree-data/qwen_vlm/data",
+    "split_manifest": "/root/gpufree-data/qwen_vlm/data/smoke/synthetic/splits/v0/manifest.json",
+    "split_manifest_sha256": "0c43e75e40d81144e93cf778be849548c2fc8d11c021906347c7961a063cbaad",
+    "n_train_samples_used": 4
+  },
+  "config": {
+    "experiment_id": "train_smoke",
+    "seed": 42,
+    "model_dir": "artifacts/base/Qwen3-VL-2B-Instruct",
+    "data": {
+      "root": "data",
+      "train_jsonl": "data/smoke/synthetic/splits/v0/train.jsonl",
+      "val_jsonl": "data/smoke/synthetic/splits/v0/val.jsonl",
+      "manifest": null,
+      "max_samples": 4
+    },
+    "pixels": {
+      "max_pixels": 262144,
+      "min_pixels": 65536
+    },
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.0
+    },
+    "optim": {
+      "lr": 0.0002,
+      "weight_decay": 0.0,
+      "lr_scheduler": "constant_with_warmup",
+      "warmup_steps": 2,
+      "warmup_ratio": 0.03,
+      "max_steps": 50,
+      "micro_batch_size": 1,
+      "grad_accum_steps": 1,
+      "max_grad_norm": 1.0,
+      "gradient_checkpointing": true,
+      "bf16": true
+    },
+    "save_steps": 15,
+    "save_total_limit": 2,
+    "cache_encodings": true,
+    "smoke_check": true,
+    "max_new_tokens": 128,
+    "mix": {
+      "include_unknown": true,
+      "aux_presence": "pairs",
+      "aux_ratio": 1.0,
+      "hard_negative_weight": 1.0,
+      "balance_states": false,
+      "epoch_size": null
+    },
+    "export_adapter_dir": "artifacts/adapters/smoke",
+    "_config_path": "configs/train/smoke.yaml"
+  },
+  "seed": 42,
+  "max_steps": 50,
+  "steps_completed": 50,
+  "exposure_stats": {
+    "total_samples": 6,
+    "unique_images": 2,
+    "by_task": {
+      "checklist": 3,
+      "presence": 3
+    },
+    "by_category_state": {
+      "screwdriver": {
+        "present": 4,
+        "absent": 0,
+        "unknown": 0
+      },
+      "pliers": {
+        "present": 3,
+        "absent": 2,
+        "unknown": 0
+      },
+      "cable_bundle": {
+        "present": 0,
+        "absent": 3,
+        "unknown": 0
+      },
+      "multimeter": {
+        "present": 3,
+        "absent": 0,
+        "unknown": 0
+      },
+      "hammer": {
+        "present": 3,
+        "absent": 0,
+        "unknown": 0
+      }
+    },
+    "hard_negative_samples": 6,
+    "unknown_samples": 0,
+    "aux_presence_from_pairs": 2,
+    "pool_size": 6,
+    "n_checklist_pool": 3,
+    "n_presence_pool": 3,
+    "n_presence_before_cap": 3,
+    "n_presence_generated": 2,
+    "n_presence_existing": 1,
+    "aux_ratio_cap": 3
+  },
+  "environment": {
+    "python": "3.12.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.5.4",
+    "peft": "0.21.3",
+    "accelerate": "1.15.0",
+    "gpu": "NVIDIA L40"
+  },
+  "lora_target_pattern": "model\\.language_model\\.layers\\.\\d+\\.(?:self_attn\\.(?:q|k|v|o)_proj|mlp\\.(?:gate|up|down)_proj)",
+  "lora_matched_modules": 196,
+  "lora_matched_examples": [
+    "model.language_model.layers.0.self_attn.q_proj",
+    "model.language_model.layers.0.self_attn.k_proj",
+    "model.language_model.layers.0.self_attn.v_proj",
+    "model.language_model.layers.0.self_attn.o_proj",
+    "model.language_model.layers.27.mlp.up_proj",
+    "model.language_model.layers.27.mlp.down_proj"
+  ],
+  "trainable": {
+    "trainable_params": 17432576,
+    "total_params": 2144964608,
+    "trainable_ratio": 0.008127209155331667,
+    "trainable_tensors": 392,
+    "dtypes": [
+      "torch.float32"
+    ]
+  },
+  "artifacts": {
+    "run_dir": "/root/gpufree-data/qwen_vlm/runs/train_smoke",
+    "train_log": "/root/gpufree-data/qwen_vlm/runs/train_smoke/train_log.jsonl",
+    "trainable_params": "/root/gpufree-data/qwen_vlm/runs/train_smoke/trainable_params.txt",
+    "named_modules": "/root/gpufree-data/qwen_vlm/runs/train_smoke/named_modules.txt"
+  },
+  "loss_first": 0.566580057144165,
+  "loss_last": 0.0022282057907432318,
+  "vision_logits_max_abs_diff": null,
+  "peak_gpu_memory_allocated_bytes": 5674250752,
+  "peak_gpu_memory_reserved_bytes": 5911871488,
+  "error": null,
+  "loss_note": "loss_first/loss_last 取自完整 train_log.jsonl（含续训到 50 步）"
+}

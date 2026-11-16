@@ -1,0 +1,25 @@
+session_id,layout_id,variant_id,image_path,pair_group_id,screwdriver,pliers,cable_bundle,multimeter,hammer,unknown_reason,condition_tags,hard_negative_tags,annotation_verified,notes
+s01,l001,v01,smoke/synthetic/images/s01/l001/v01.png,s01_l001_p01,present,present,present,present,present,{},lighting_warm|background_wood|baseline,,false,合成冒烟，不是真实照片。齐全基准。
+s01,l001,v02,smoke/synthetic/images/s01/l001/v02.png,s01_l001_p01,absent,present,present,present,present,{},lighting_warm|background_wood,,false,合成冒烟，不是真实照片。相对同布置 v01 只拿走螺丝刀。
+s01,l002,v01,smoke/synthetic/images/s01/l002/v01.png,s01_l002_p01,present,present,absent,present,present,{},lighting_warm|background_wood|baseline,pliers_vs_metal_tool,false,合成冒烟，不是真实照片。钳子在场，旁边有扳手状金属件。
+s01,l002,v02,smoke/synthetic/images/s01/l002/v02.png,s01_l002_p01,present,absent,absent,present,present,{},lighting_warm|background_wood,pliers_vs_metal_tool,false,合成冒烟，不是真实照片。相对 v01 只拿走钳子，扳手留在台上。
+s01,l002,v03,smoke/synthetic/images/s01/l002/v03.png,,present,present,absent,present,unknown,"{""hammer"": ""灰色块遮住锤头和锤柄，无法确认""}",lighting_warm|background_wood|occlusion,,false,合成冒烟，不是真实照片。锤子被灰色块挡住。
+s01,l003,v01,smoke/synthetic/images/s01/l003/v01.png,s01_l003_p01,present,present,absent,present,absent,{},lighting_warm|background_wood|baseline,probe_leads_vs_cable,false,合成冒烟，不是真实照片。没有成束线缆，万用表表笔线展开。
+s01,l003,v02,smoke/synthetic/images/s01/l003/v02.png,s01_l003_p01,present,present,absent,absent,absent,{},lighting_warm|background_wood,,false,合成冒烟，不是真实照片。相对 v01 只拿走万用表，表笔一并拿走。
+s02,l001,v01,smoke/synthetic/images/s02/l001/v01.png,s02_l001_p01,present,present,present,present,present,{},lighting_cool|background_gray|baseline,,false,合成冒烟，不是真实照片。齐全基准。
+s02,l001,v02,smoke/synthetic/images/s02/l001/v02.png,s02_l001_p01,present,present,absent,present,present,{},lighting_cool|background_gray,,false,合成冒烟，不是真实照片。相对 v01 只拿走线缆。
+s02,l001,v03,smoke/synthetic/images/s02/l001/v03.png,,unknown,present,present,present,present,"{""screwdriver"": ""灰色块遮住手柄和杆，无法确认""}",lighting_cool|background_gray|occlusion,,false,合成冒烟，不是真实照片。螺丝刀被灰色块挡住。
+s02,l002,v01,smoke/synthetic/images/s02/l002/v01.png,s02_l002_p01,present,absent,present,absent,present,{},lighting_cool|background_gray|baseline,pliers_vs_metal_tool,false,合成冒烟，不是真实照片。没有钳子，台上有扳手状金属件。
+s02,l002,v02,smoke/synthetic/images/s02/l002/v02.png,s02_l002_p01,present,absent,present,absent,absent,{},lighting_cool|background_gray,pliers_vs_metal_tool,false,合成冒烟，不是真实照片。相对 v01 只拿走锤子，扳手留在台上。
+s02,l003,v01,smoke/synthetic/images/s02/l003/v01.png,s02_l003_p01,present,absent,present,present,present,{},lighting_cool|background_gray|baseline,,false,合成冒烟，不是真实照片。缺钳子，没有干扰扳手。
+s02,l003,v02,smoke/synthetic/images/s02/l003/v02.png,s02_l003_p01,absent,absent,present,present,present,{},lighting_cool|background_gray,,false,合成冒烟，不是真实照片。相对 v01 只拿走螺丝刀。
+s02,l003,v03,smoke/synthetic/images/s02/l003/v03.png,,present,absent,present,present,present,{},lighting_cool|background_gray|position_shift,,false,合成冒烟，不是真实照片。与 v01 的器材集合相同，只改变位置。
+s03,l001,v01,smoke/synthetic/images/s03/l001/v01.png,s03_l001_p01,present,present,present,present,present,{},lighting_dim|background_dark|baseline,,false,合成冒烟，不是真实照片。齐全基准。
+s03,l001,v02,smoke/synthetic/images/s03/l001/v02.png,s03_l001_p01,present,absent,present,present,present,{},lighting_dim|background_dark,,false,合成冒烟，不是真实照片。相对 v01 只拿走钳子。
+s03,l001,v03,smoke/synthetic/images/s03/l001/v03.png,,present,present,unknown,present,present,"{""cable_bundle"": ""线缆区域严重失焦，无法确认是不是一束线""}",lighting_dim|background_dark|defocus,,false,合成冒烟，不是真实照片。线缆位置失焦。
+s03,l002,v01,smoke/synthetic/images/s03/l002/v01.png,s03_l002_p01,present,present,absent,present,present,{},lighting_mixed|background_dark|baseline,probe_leads_vs_cable,false,合成冒烟，不是真实照片。表笔线展开，没有独立线缆。
+s03,l002,v02,smoke/synthetic/images/s03/l002/v02.png,s03_l002_p01,present,present,present,present,present,{},lighting_mixed|background_dark,probe_leads_vs_cable,false,合成冒烟，不是真实照片。相对 v01 放入一束线缆，表笔线仍在。
+s03,l002,v03,smoke/synthetic/images/s03/l002/v03.png,,present,present,present,unknown,present,"{""multimeter"": ""检查区域右侧出画，万用表位置不可见""}",lighting_mixed|background_dark|partial_frame,,false,合成冒烟，不是真实照片。右侧出画，万用表无法确认。
+s03,l003,v01,smoke/synthetic/images/s03/l003/v01.png,s03_l003_p01,absent,present,absent,present,present,{},lighting_dim|background_dark|baseline,,false,合成冒烟，不是真实照片。基准：缺螺丝刀和线缆。
+s03,l003,v02,smoke/synthetic/images/s03/l003/v02.png,s03_l003_p01,absent,present,absent,present,absent,{},lighting_dim|background_dark,,false,合成冒烟，不是真实照片。相对 v01 只拿走锤子。
+s03,l003,v03,smoke/synthetic/images/s03/l003/v03.png,,absent,unknown,absent,present,present,"{""pliers"": ""灰色块遮住钳口和手柄，无法确认""}",lighting_dim|background_dark|occlusion,,false,合成冒烟，不是真实照片。钳子被灰色块挡住。

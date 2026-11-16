@@ -1,0 +1,7 @@
+# A3：去掉 unknown 样本。其余与 M 相同。
+experiment_id: A3
+mix:
+  include_unknown: false
+  aux_presence: pairs
+  hard_negative_weight: 3.0
+  balance_states: true

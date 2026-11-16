@@ -1,0 +1,132 @@
+{
+  "image": "data/smoke/b0/bench_empty.png",
+  "quant_used": "q4_k_m",
+  "rows": [
+    {
+      "tier": "384",
+      "max_pixels": 147456,
+      "transformers_n_image_tokens": 130,
+      "transformers_size_wh": [
+        416,
+        320
+      ],
+      "llamacpp": {
+        "nx": 13,
+        "ny": 10,
+        "n_image_tokens": 130,
+        "logged_image_max_pixels": 147456,
+        "logged_image_min_pixels": 65536,
+        "server_capped_image_tokens": false
+      },
+      "prompt_tokens": 385.0,
+      "raw_text_preview": "```json\n{\n  \"item_states\": {\n    \"screwdriver\":",
+      "finish_reason": "length",
+      "tokens_match_transformers": true
+    },
+    {
+      "tier": "512",
+      "max_pixels": 262144,
+      "transformers_n_image_tokens": 234,
+      "transformers_size_wh": [
+        576,
+        416
+      ],
+      "llamacpp": {
+        "nx": 18,
+        "ny": 13,
+        "n_image_tokens": 234,
+        "logged_image_max_pixels": 262144,
+        "logged_image_min_pixels": 65536,
+        "server_capped_image_tokens": false
+      },
+      "prompt_tokens": 489.0,
+      "raw_text_preview": "```json\n{\n  \"item_states\": {\n    \"screwdriver\":",
+      "finish_reason": "length",
+      "tokens_match_transformers": true
+    },
+    {
+      "tier": "768",
+      "max_pixels": 589824,
+      "transformers_n_image_tokens": 540,
+      "transformers_size_wh": [
+        864,
+        640
+      ],
+      "llamacpp": {
+        "nx": 27,
+        "ny": 20,
+        "n_image_tokens": 540,
+        "logged_image_max_pixels": 589824,
+        "logged_image_min_pixels": 65536,
+        "server_capped_image_tokens": false
+      },
+      "prompt_tokens": 795.0,
+      "raw_text_preview": "```json\n{\n  \"item_states\": {\n    \"screwdriver\":",
+      "finish_reason": "length",
+      "tokens_match_transformers": true
+    }
+  ],
+  "prompt_token_deltas": {
+    "prompt_tokens": [
+      385.0,
+      489.0,
+      795.0
+    ],
+    "delta_512_minus_384": 104.0,
+    "delta_768_minus_512": 306.0,
+    "expected_delta_512_minus_384": 104,
+    "expected_delta_768_minus_512": 306
+  },
+  "conclusion": "三档 llama.cpp 日志里的 nx*ny 与 Transformers 的视觉 token 数一致。",
+  "transformers_reference": {
+    "image": "data/smoke/b0/bench_empty.png",
+    "size_wh": [
+      1280,
+      960
+    ],
+    "tiers": {
+      "384": {
+        "max_pixels": 147456,
+        "min_pixels": 65536,
+        "n_image_tokens": 130,
+        "image_size_after_resize_wh": [
+          416,
+          320
+        ],
+        "smart_resize_hw": [
+          320,
+          416
+        ],
+        "smart_resize_tokens": 130
+      },
+      "512": {
+        "max_pixels": 262144,
+        "min_pixels": 65536,
+        "n_image_tokens": 234,
+        "image_size_after_resize_wh": [
+          576,
+          416
+        ],
+        "smart_resize_hw": [
+          416,
+          576
+        ],
+        "smart_resize_tokens": 234
+      },
+      "768": {
+        "max_pixels": 589824,
+        "min_pixels": 65536,
+        "n_image_tokens": 540,
+        "image_size_after_resize_wh": [
+          864,
+          640
+        ],
+        "smart_resize_hw": [
+          640,
+          864
+        ],
+        "smart_resize_tokens": 540
+      }
+    }
+  }
+}

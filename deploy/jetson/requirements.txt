@@ -1,0 +1,8 @@
+# Jetson 自带 Python 3.10。这些包都声明支持 >=3.10。
+# 不安装 torch / transformers。推理走 llama-server。
+gradio==6.32.0
+opencv-python>=4.8
+pillow>=10
+pyyaml>=6
+jsonschema>=4.18
+requests>=2.31

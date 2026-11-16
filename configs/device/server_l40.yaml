@@ -1,0 +1,12 @@
+# 服务器侧编译与冒烟用的设备。不是板端数字。
+name: server_l40
+gpu: NVIDIA L40
+compute_capability: sm_89
+cuda: "12.8"
+cmake_cuda_architectures: "89"
+llamacpp_build_flags:
+  - -DGGML_CUDA=ON
+  - -DCMAKE_CUDA_ARCHITECTURES=89
+  - -DLLAMA_CURL=OFF
+memory_budget_mib: 15360
+note: 与训练作业共用一块 GPU。启动推理前看 nvidia-smi，本任务占用控制在 15GB 以内。

@@ -1,0 +1,7 @@
+# A2：去掉困难负样本加权。其余与 M 相同。
+experiment_id: A2
+mix:
+  include_unknown: true
+  aux_presence: pairs
+  hard_negative_weight: 1.0
+  balance_states: true

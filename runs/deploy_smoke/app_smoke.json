@@ -1,0 +1,6 @@
+{
+  "ok": true,
+  "camera_tested": false,
+  "camera_note": "服务器没有可用的采集摄像头，摄像头预览没有测。",
+  "result_preview": "[\"/root/gpufree-data/qwen_vlm/work/tmp/gradio/6cf5aca50a37ceff7dbefb2aaa8f8847b1ab77431d1a525b8b1d13ca8f6b61fd/image.webp\", \"2026-11-16T14:12:22\", \"| 类别 | 状态 | 是否在本次清单 |\\n| --- | --- | --- |\\n| 螺丝刀 | 无法确认（unknown） | 是 |\\n| 钳子 | 无法确认（unknown） | 是 |\\n| 线缆 | 无法确认（unknown） | 是 |\\n| 万用表 | 无法确认（unknown） | 是 |\\n| 锤子 | 无法确认（unknown） | 是 |\", \"（清单内没有缺失项）；无法确认：螺丝刀、钳子、线缆、万用表、锤子\", \"螺丝刀、钳子、线缆、万用表、锤子是否齐备暂时无法确认。\\n\\n原始输出：\\n```json\\n{\\n  \\\"item_states\\\": {\\n    \\\"screwdriver\\\": \\\"unknown\\\",\\n    \\\"pliers\\\": \\\"unknown\\\",\\n    \\\"cable_bundle\\\": \\\"unknown\\\",\\n    \\\"multimeter\\\": \\\"unknown\\\",\\n    \\\"hammer\\\": \\\"unknown\\\"\\n  }\\n}\\n```\", \"总耗时 0.372 秒；解析 ok；重试 0 次；生成 55 token；prompt 489 token；prefill 0.149 秒；生成 0.161 秒。\"]"
+}

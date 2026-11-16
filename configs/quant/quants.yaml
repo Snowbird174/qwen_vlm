@@ -1,0 +1,19 @@
+# 语言 GGUF 的量化档。视觉 mmproj 不在这里量化。
+# 课程要求对比 F16、Q8_0、Q4_K_M。mmproj 始终是 F16。
+version: 1
+language:
+  - id: f16
+    llama_quantize: null
+    outfile_suffix: f16
+    note: convert_hf_to_gguf.py --outtype f16 的直接产物
+  - id: q8_0
+    llama_quantize: Q8_0
+    outfile_suffix: q8_0
+    note: 由语言 F16 经 llama-quantize 得到
+  - id: q4_k_m
+    llama_quantize: Q4_K_M
+    outfile_suffix: q4_k_m
+    note: 由语言 F16 经 llama-quantize 得到
+mmproj:
+  quant: F16
+  note: 视觉编码器、merger 与 DeepStack 投影保持 F16。Q4_K_M 不是整个 VLM 的精度。
