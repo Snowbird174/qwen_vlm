@@ -2,6 +2,7 @@
 
 固定俯视摄像头拍实验台，用户给出所需器材清单（螺丝刀、钳子、线缆、万用表、锤子中的任意子集），系统判断是否齐全、缺什么；画面不足以判断时回答"无法确认"。模型输出五类三状态 JSON，完整性结论由 `src/qwen_vlm/common/derive.py` 确定性推导。
 
+- **接手请先读 `HANDOFF.md`**
 - 课程要求和证据对应：`docs/coursework_requirements.md`
 - 当前进度：`STATUS.md`；就绪情况：`reports/readiness.md`；实验登记：`EXPERIMENTS.md`
 - 模型原理：`docs/model_principles.md`；冻结接口：`contracts/`
@@ -39,9 +40,12 @@ envs/qwen_vlm/bin/python scripts/smoke_b0.py         # 基础模型冒烟（合�
 
 采集与标注按 `docs/data_collection.md`、`docs/annotation_guide.md`。照片放到 `data/raw/<session>/<layout>/<variant>.jpg`，标注表模板在 `data/annotations/templates/annotation_template.csv`（编号不要含下划线）。
 
+也可以用网页标注工具逐张标注（浏览器打开 `localhost:7861`），结果写入 `data/annotations/<批次>.csv`：
+
 ```bash
 P=envs/qwen_vlm/bin/python
-$P scripts/data_csv_to_jsonl.py --csv data/annotations/real_v1.csv --out data/annotations/real_v1.jsonl --source real_lab
+$P scripts/data_label_tool.py data/raw/session_001                 # 生成 data/annotations/s001.csv
+$P scripts/data_csv_to_jsonl.py --csv data/annotations/s001.csv --out data/annotations/real_v1.jsonl --source real_lab --seed 0
 $P scripts/data_validate.py data/annotations/real_v1.jsonl
 $P scripts/data_split.py --input data/annotations/real_v1.jsonl --out data/splits/v1 --fail-on-leak
 $P scripts/data_stats.py --split-dir data/splits/v1 --out data/splits/v1/stats.md
