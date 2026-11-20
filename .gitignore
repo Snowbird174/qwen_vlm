@@ -19,3 +19,4 @@ runs/**/checkpoints/
 runs/**/adapter/
 runs/**/logs/*.log
 *.gguf
+data/aug/

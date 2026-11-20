@@ -16,6 +16,8 @@
 
 详细清单见 `STATUS.md` 和 `reports/readiness.md`。
 
+> **最新进展（2026-11-20）**：50 张照片已标注完、B0 已有真实结果，用户决定不再拍照。接下来的具体任务以 **`docs/NEXT_STEPS.md`** 为准，下面第 2 节是早期的通用流程。
+
 ## 2. 接下来按顺序做
 
 1. **标注第一批照片**：`envs/qwen_vlm/bin/python scripts/data_label_tool.py data/raw/session_001`，浏览器打开 `localhost:7861`。逐张选 5 件器材的状态，标完点"检查全部标注"。结果存在 `data/annotations/s001.csv`。
