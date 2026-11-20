@@ -15,6 +15,7 @@ PRESETS = {
     "A1": {"include_unknown": True, "aux_presence": "none", "hard_negative_weight": 3.0, "balance_states": True},
     "A2": {"include_unknown": True, "aux_presence": "pairs", "hard_negative_weight": 1.0, "balance_states": True},
     "A3": {"include_unknown": False, "aux_presence": "pairs", "hard_negative_weight": 3.0, "balance_states": True},
+    "A4": {"include_unknown": True, "aux_presence": "pairs", "hard_negative_weight": 3.0, "balance_states": True},
 }
 
 

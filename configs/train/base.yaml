@@ -1,4 +1,4 @@
-# 共享超参。B1 / M / A1 / A2 / A3 只覆盖 experiment_id 和 mix。
+# 共享超参。B1 / M / A1–A4 只覆盖 experiment_id 和 mix。
 # max_steps 先放一个各实验相同的占位值，正式开训前按数据和显存再改。
 experiment_id: base
 seed: 42
@@ -35,7 +35,7 @@ optim:
   bf16: true
 
 save_steps: 200
-save_total_limit: 2
+save_total_limit: 1
 cache_encodings: false
 smoke_check: false
 max_new_tokens: 128

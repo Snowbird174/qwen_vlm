@@ -1,0 +1,160 @@
+{
+  "manifest_version": 1,
+  "name": "fold2",
+  "protocol": "fixed_scene_group_cv3",
+  "fold": 2,
+  "seed": 0,
+  "source_jsonl": "data/annotations/real_v1.jsonl",
+  "source_sha256": "5e8673a72c86c0a5a6569676736d34057496734c48e93ac66a6b2a333aa7e37e",
+  "augment_jsonl": "data/aug/v1/samples.jsonl",
+  "augment_sha256": "72c3a2a858e3fba460790e2f07cb9eaa25ed162457dedfbff42b6eabddba7ee0",
+  "train_scene_groups": [
+    "s001_l001",
+    "s001_l002",
+    "s001_l003",
+    "s001_l004",
+    "s001_l005",
+    "s001_l006",
+    "s001_l007",
+    "s001_l009"
+  ],
+  "test_scene_groups": [
+    "s001_l008"
+  ],
+  "params": {
+    "protocol": "fixed_scene_group_cv3",
+    "fold": 2,
+    "randomized": false,
+    "split_unit": "scene_group_id；固定映射见 docs/NEXT_STEPS.md 任务 C",
+    "train_scene_groups": [
+      "s001_l001",
+      "s001_l002",
+      "s001_l003",
+      "s001_l004",
+      "s001_l005",
+      "s001_l006",
+      "s001_l007",
+      "s001_l009"
+    ],
+    "test_scene_groups": [
+      "s001_l008"
+    ],
+    "test_sources": [
+      "real_lab"
+    ],
+    "train_sources": [
+      "real_lab",
+      "synthetic_edit"
+    ]
+  },
+  "warnings": [],
+  "coverage": {
+    "real_samples": 100,
+    "real_images": 50,
+    "test_sample_appearances": 100,
+    "test_image_appearances": 50,
+    "real_samples_covered_once": true,
+    "real_images_covered_once": true,
+    "by_fold": {
+      "fold1": {
+        "num_test_samples": 50,
+        "num_test_images": 25,
+        "test_scene_groups": [
+          "s001_l009"
+        ]
+      },
+      "fold2": {
+        "num_test_samples": 34,
+        "num_test_images": 17,
+        "test_scene_groups": [
+          "s001_l008"
+        ]
+      },
+      "fold3": {
+        "num_test_samples": 16,
+        "num_test_images": 8,
+        "test_scene_groups": [
+          "s001_l001",
+          "s001_l002",
+          "s001_l003",
+          "s001_l004",
+          "s001_l005",
+          "s001_l006",
+          "s001_l007"
+        ]
+      }
+    }
+  },
+  "checks": {
+    "test_real_only": true,
+    "no_shared_scene_groups": true,
+    "no_shared_sample_ids": true,
+    "no_shared_image_paths": true,
+    "no_shared_pair_group_ids": true,
+    "real_samples_covered_once": true,
+    "real_images_covered_once": true,
+    "pair_groups_within_scene_group": true
+  },
+  "files": {
+    "train": {
+      "path": "train.jsonl",
+      "sha256": "b2ef7dff131e525cedff91e3153aa9ba6157e831dcd7a1243d990be070ac803b",
+      "num_samples": 330,
+      "num_images": 165,
+      "num_scene_groups": 8,
+      "scene_group_ids": [
+        "s001_l001",
+        "s001_l002",
+        "s001_l003",
+        "s001_l004",
+        "s001_l005",
+        "s001_l006",
+        "s001_l007",
+        "s001_l009"
+      ],
+      "num_real_samples": 66,
+      "num_synthetic_edit_samples": 264,
+      "source_counts": {
+        "real_lab": 66,
+        "synthetic_edit": 264
+      }
+    },
+    "train_real": {
+      "path": "train_real.jsonl",
+      "sha256": "310367a6775f7c1ca1e3a8d5dc41d16ebba822e2fdc7996f4d5ad7c2cec3a91c",
+      "num_samples": 66,
+      "num_images": 33,
+      "num_scene_groups": 8,
+      "scene_group_ids": [
+        "s001_l001",
+        "s001_l002",
+        "s001_l003",
+        "s001_l004",
+        "s001_l005",
+        "s001_l006",
+        "s001_l007",
+        "s001_l009"
+      ],
+      "num_real_samples": 66,
+      "num_synthetic_edit_samples": 0,
+      "source_counts": {
+        "real_lab": 66
+      }
+    },
+    "test": {
+      "path": "test.jsonl",
+      "sha256": "367b193dca9c8458ba727fcc8743d133ea6e3f7b35a6d58f0dd3d4392137070d",
+      "num_samples": 34,
+      "num_images": 17,
+      "num_scene_groups": 1,
+      "scene_group_ids": [
+        "s001_l008"
+      ],
+      "num_real_samples": 34,
+      "num_synthetic_edit_samples": 0,
+      "source_counts": {
+        "real_lab": 34
+      }
+    }
+  }
+}

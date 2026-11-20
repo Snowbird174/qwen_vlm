@@ -340,7 +340,9 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--max-steps", type=int, default=None)
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--train-jsonl", default=None)
-    parser.add_argument("--val-jsonl", default=None)
+    validation = parser.add_mutually_exclusive_group()
+    validation.add_argument("--val-jsonl", default=None)
+    validation.add_argument("--no-validation", action="store_true", help="忽略配置中的验证集")
     parser.add_argument("--data-root", default=None)
     parser.add_argument("--manifest", default=None)
     parser.add_argument("--max-samples", type=int, default=None)
@@ -359,7 +361,7 @@ def main(argv: list[str] | None = None) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     data_cfg = cfg["data"]
     train_path = _resolve(root, args.train_jsonl or data_cfg["train_jsonl"])
-    val_path = _resolve(root, args.val_jsonl or data_cfg.get("val_jsonl"))
+    val_path = None if args.no_validation else _resolve(root, args.val_jsonl or data_cfg.get("val_jsonl"))
     data_root = _resolve(root, args.data_root or data_cfg.get("root") or "data")
     manifest_path = _resolve(root, args.manifest or data_cfg.get("manifest"))
     if manifest_path is None and train_path is not None:

@@ -1,0 +1,7 @@
+# A4 使用 M 的训练混合策略；run_cv.py 传入只含真实样本的训练集。
+experiment_id: A4
+mix:
+  include_unknown: true
+  aux_presence: pairs
+  hard_negative_weight: 3.0
+  balance_states: true
