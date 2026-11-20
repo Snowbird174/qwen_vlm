@@ -13,8 +13,9 @@ fail() {
 }
 
 ROOT="$(jetson_root)"
-GGUF="${GGUF:-$ROOT/models/base-q4_k_m.gguf}"
-MMPROJ="${MMPROJ:-$ROOT/models/mmproj-base-f16.gguf}"
+MODEL_TAG="${MODEL_TAG:-base}"
+GGUF="${GGUF:-$ROOT/models/$MODEL_TAG-q4_k_m.gguf}"
+MMPROJ="${MMPROJ:-$ROOT/models/mmproj-$MODEL_TAG-f16.gguf}"
 PIXELS="${PIXELS:-512}"
 CAMERA="${CAMERA:-0}"
 PORT="${PORT:-8080}"

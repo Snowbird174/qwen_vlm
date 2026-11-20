@@ -26,7 +26,7 @@ if (( avail_kb < 5 * 1024 * 1024 )); then
 fi
 
 rm -rf "$OUT"
-mkdir -p "$OUT/models" "$OUT/data/smoke/b0" "$OUT/src"
+mkdir -p "$OUT/models" "$OUT/data/smoke/b0" "$OUT/src" "$OUT/scripts"
 
 echo "打包 llama.cpp 源码（不含 build）"
 tar -C "$ROOT/vendor" -czf "$OUT/llama.cpp-b12425.tar.gz" \
@@ -69,6 +69,7 @@ shopt -u nullglob
 cp -a "$ROOT/deploy" "$OUT/deploy"
 cp -a "$ROOT/contracts" "$OUT/contracts"
 cp -a "$ROOT/configs" "$OUT/configs"
+cp -a "$ROOT/scripts/predict_llamacpp.py" "$OUT/scripts/"
 cp -a "$ROOT/data/smoke/b0/." "$OUT/data/smoke/b0/"
 mkdir -p "$OUT/src"
 cp -a "$ROOT/src/qwen_vlm" "$OUT/src/qwen_vlm"

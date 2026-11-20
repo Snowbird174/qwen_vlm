@@ -103,9 +103,13 @@ def main() -> None:
 
     root = PROJECT_ROOT
     disk_guard(root)
+    merged_dir = Path(args.merged_dir)
+    if not merged_dir.is_absolute():
+        merged_dir = root / merged_dir
+    merged_dir.parent.mkdir(parents=True, exist_ok=True)
     needed = 5 * 1024**3 + int(4.8 * 1024**3)
-    if free_bytes(root) < needed:
-        raise SystemExit("磁盘剩余不够同时放下合并模型和 5 GiB 余量，停止合并。")
+    if free_bytes(merged_dir.parent) < needed:
+        raise SystemExit(f"{merged_dir.parent} 的可用空间不足以写入合并模型并保留 5 GiB。")
     wait_for_gpu()
 
     base_dir = Path(args.base_model)
@@ -117,9 +121,6 @@ def main() -> None:
     data_root = Path(args.data_root)
     if not data_root.is_absolute():
         data_root = root / data_root
-    merged_dir = Path(args.merged_dir)
-    if not merged_dir.is_absolute():
-        merged_dir = root / merged_dir
     check_path = Path(args.merge_check)
     if not check_path.is_absolute():
         check_path = root / check_path

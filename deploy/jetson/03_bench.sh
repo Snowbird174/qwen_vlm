@@ -22,7 +22,8 @@ REPEAT="${REPEAT:-100}"
 WARMUP="${WARMUP:-5}"
 PORT="${PORT:-8080}"
 MODELS="${MODELS_DIR:-$ROOT/models}"
-MMPROJ="${MMPROJ:-$MODELS/mmproj-base-f16.gguf}"
+MODEL_TAG="${MODEL_TAG:-base}"
+MMPROJ="${MMPROJ:-$MODELS/mmproj-$MODEL_TAG-f16.gguf}"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 OUT_DIR="$ROOT/logs/bench_$STAMP"
 mkdir -p "$OUT_DIR"
@@ -76,7 +77,7 @@ for quant in "${quant_arr[@]}"; do
   for pixels in "${pixel_arr[@]}"; do
     quant="${quant// /}"
     pixels="${pixels// /}"
-    gguf="$MODELS/base-${quant}.gguf"
+    gguf="$MODELS/$MODEL_TAG-${quant}.gguf"
     echo
     echo "===== quant=$quant pixels=$pixels ====="
     if [[ ! -f "$gguf" || ! -f "$MMPROJ" ]]; then

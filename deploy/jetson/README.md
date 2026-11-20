@@ -30,6 +30,8 @@ bash deploy/jetson/03_bench.sh
 bash deploy/jetson/04_app.sh
 ```
 
+使用最终模型的 bundle 时，为 `02`–`04` 设定 `MODEL_TAG=final`，脚本会读取 `final-*.gguf` 和 `mmproj-final-f16.gguf`。
+
 `00_probe.sh` 只读：型号、L4T、`nvpmodel -q`、CUDA、内存和 swap、磁盘、Python、cmake/gcc、`/dev/video*`、`v4l2-ctl`、用户组、能不能访问 PyPI。
 
 `01_build_llamacpp.sh` 解压源码并编译：
@@ -53,6 +55,17 @@ QUANTS=q4_k_m PIXELS=512 REPEAT=100 bash deploy/jetson/03_bench.sh
 ```
 
 默认 `QUANTS=q4_k_m,q8_0,f16`。本 bundle 如果只带了 Q4，另外两档会记成缺文件，整次脚本以 FAIL 结束，但 Q4 的 JSONL 仍然在。正式对比三档时，把对应 GGUF 放进 `models/`，名字是 `base-q8_0.gguf`、`base-f16.gguf`，mmproj 仍用 `mmproj-base-f16.gguf`。
+
+测真实图片的点检准确率时，按原路径将 `data/annotations/real_v1.jsonl` 和 `data/raw/session_001/` 拷到 bundle，在板上的 llama-server 处于运行状态时按同一像素预算发请求：
+
+```bash
+PYTHONPATH=src .venv/bin/python scripts/predict_llamacpp.py \
+  --server http://127.0.0.1:8080 --jsonl data/annotations/real_v1.jsonl \
+  --max-pixels 262144 --experiment-id jetson_final_q4_512 \
+  --output logs/jetson_final_q4_512_predictions.jsonl
+```
+
+同时采集 `tegrastats`，记录与这批请求对应的日志范围。回传预测 JSONL 和日志后，使用服务器的金标准计算板端指标。
 
 `04_app.sh` 同时拉起 llama-server 和网页。浏览器打开 `http://<板子IP>:7860`。模型已经在本机，起来之后可以断网。摄像头设备号用 `CAMERA=0`（即 `/dev/video0`）。没有摄像头时，网页里选「读取保存图片」。
 
