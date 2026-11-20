@@ -58,8 +58,9 @@ def build_app(store: LabelStore) -> gr.Blocks:
                 condition_tags=tags, hard_negative_tags=hard, pair_with_previous=paired,
             )
         except ValueError as exc:
+            gr.Warning(f"没有保存：{exc}", duration=None)
             out = view(i)
-            out[-1] = f"⚠ 没有保存：{exc}"
+            out[-1] = f"⚠ **没有保存**：{exc}"
             return out
         out = view(int(i) + 1 if int(i) + 1 < len(store) else int(i))
         out[-1] = "已保存第 %d 张。%s" % (int(i) + 1, "；".join(msgs))
@@ -82,6 +83,7 @@ def build_app(store: LabelStore) -> gr.Blocks:
     with gr.Blocks(title="器材点检标注") as demo:
         idx = gr.State(store.first_unlabeled())
         header = gr.Markdown()
+        msg = gr.Markdown()
         with gr.Row():
             with gr.Column(scale=3):
                 image = gr.Image(type="filepath", interactive=False, height=600, label="照片")
@@ -101,7 +103,6 @@ def build_app(store: LabelStore) -> gr.Blocks:
                     skip_btn = gr.Button("这张是废片，跳过")
                     jump = gr.Number(label="跳到第几张", precision=0, minimum=1, maximum=len(store))
                     jump_btn = gr.Button("跳转")
-                msg = gr.Markdown()
         with gr.Row():
             check_btn = gr.Button("检查全部标注")
         check_out = gr.Markdown()

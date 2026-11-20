@@ -167,7 +167,11 @@ class LabelStore:
             raise ValueError("配对的两张必须是同一个摆放编号")
         diff = [c for c in CATEGORY_IDS if prev[c] != row[c]]
         if len(diff) != 1:
-            raise ValueError(f"配对的两张必须恰好只有 1 件器材状态不同，现在不同的有 {len(diff)} 件")
+            names = "、".join(NAME_ZH[c] for c in diff) or "没有"
+            raise ValueError(
+                f"配对的两张必须恰好只有 1 件器材状态不同，这张和上一张不同的有 {len(diff)} 件（{names}）。"
+                "请取消勾选「与上一张配对」再保存"
+            )
         if prev["pair_group_id"] and prev["pair_group_id"] != old_pair:
             raise ValueError("上一张已经和更早的一张配过对了，一张图只能属于一对")
         if old_pair and prev["pair_group_id"] == old_pair:
