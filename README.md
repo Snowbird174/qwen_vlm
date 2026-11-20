@@ -2,7 +2,7 @@
 
 固定俯视摄像头拍实验台，用户给出所需器材清单（螺丝刀、钳子、线缆、万用表、锤子中的任意子集），系统判断是否齐全、缺什么；画面不足以判断时回答"无法确认"。模型输出五类三状态 JSON，完整性结论由 `src/qwen_vlm/common/derive.py` 确定性推导。
 
-- **接手请先读 `HANDOFF.md`**
+- **接手请先读 `HANDOFF.md` 和 `docs/NEXT_STEPS.md`**
 - 课程要求和证据对应：`docs/coursework_requirements.md`
 - 当前进度：`STATUS.md`；就绪情况：`reports/readiness.md`；实验登记：`EXPERIMENTS.md`
 - 模型原理：`docs/model_principles.md`；冻结接口：`contracts/`
@@ -47,8 +47,14 @@ P=envs/qwen_vlm/bin/python
 $P scripts/data_label_tool.py data/raw/session_001                 # 生成 data/annotations/s001.csv
 $P scripts/data_csv_to_jsonl.py --csv data/annotations/s001.csv --out data/annotations/real_v1.jsonl --source real_lab --seed 0
 $P scripts/data_validate.py data/annotations/real_v1.jsonl
-$P scripts/data_split.py --input data/annotations/real_v1.jsonl --out data/splits/v1 --fail-on-leak
-$P scripts/data_stats.py --split-dir data/splits/v1 --out data/splits/v1/stats.md
+```
+
+当前 `session_001` 已完成标注。使用器材框生成成对训练图，再创建固定三折：
+
+```bash
+$P scripts/data_make_augment.py --seed 0
+$P scripts/data_validate.py data/aug/v1/samples.jsonl
+$P scripts/data_make_cv.py
 ```
 
 合成冒烟数据（只用于打通流程）：`$P scripts/data_make_synthetic.py`，产物在 `data/smoke/synthetic/`。
@@ -56,42 +62,36 @@ $P scripts/data_stats.py --split-dir data/splits/v1 --out data/splits/v1/stats.m
 ## 2. 基线 B0 与训练
 
 ```bash
-# B0：原模型在测试集上推理，然后评测
-$P scripts/predict_transformers.py --jsonl data/splits/v1/test.jsonl --experiment-id B0
-$P scripts/eval_predictions.py --gold data/splits/v1/test.jsonl --pred runs/B0/predictions.jsonl --out runs/B0/eval --experiment-id B0
-
-# 训练（B1 / M / A1 / A2 / A3 同一套命令，只换配置）；configs/train/base.yaml 默认指向合成数据，必须用参数覆盖
-$P scripts/train.py --config configs/train/M.yaml \
-   --train-jsonl data/splits/v1/train.jsonl --val-jsonl data/splits/v1/val.jsonl \
-   --manifest data/splits/v1/manifest.json --max-steps <各实验相同的步数>
-
-# 训练后的模型推理与评测（adapter 保存在 runs/<experiment_id>/adapter；配置了 export_adapter_dir 时另存一份到 artifacts/adapters/）
-$P scripts/predict_transformers.py --jsonl data/splits/v1/test.jsonl --experiment-id M --adapter runs/M/adapter
-$P scripts/eval_predictions.py --gold data/splits/v1/test.jsonl --pred runs/M/predictions.jsonl --out runs/M/eval --experiment-id M
+# 按 docs/NEXT_STEPS.md 记录的统一训练预算运行 B1/M/A1–A4 的固定三折。
+$P scripts/run_cv.py --max-steps 50
 
 # 汇总对比表
 $P scripts/eval_compare.py --runs-root runs --out runs/comparison
 ```
+
+B0 在 50 张真实照片上的 512² 基线已归档于 `runs/B0_s001/`，其余分辨率与量化档见 `runs/comparison/`。每折 adapter 位于 `runs/cv3_folds/<ID>_fold<k>/adapter/`，每个实验的三折汇总结果位于 `runs/<ID>_cv3/eval/`。
 
 冒烟训练：`$P scripts/train.py --config configs/train/smoke.yaml`（合成数据，约 30 步，显存峰值约 5.5GiB）。
 
 ## 3. 合并与转换 GGUF
 
 ```bash
-# 合并 LoRA，并在一个样本上检查合并前后贪心输出一致（需要约 10GB 空闲磁盘）
-$P scripts/merge_lora.py --adapter runs/M/adapter --sample-jsonl data/splits/v1/val.jsonl \
-   --merged-dir artifacts/merged/M --merge-check runs/M/merge_check.json
+# 将 STAGING 设为有约 16 GiB 可用空间的临时目录。目录规划见 docs/NEXT_STEPS.md。
+# 用任务 E 的全量训练 adapter 检查合并前后贪心输出。
+$P scripts/merge_lora.py --adapter runs/M_final/adapter --sample-jsonl data/annotations/real_v1.jsonl \
+   --merged-dir "$STAGING/merged" --merge-check runs/M_final/merge_check.json
 
 # 服务器上构建 llama.cpp（只需一次），再转换：F16 语言 GGUF + F16 mmproj + Q8_0 + Q4_K_M
 bash scripts/export_build_llamacpp_server.sh
-bash scripts/export_gguf.sh artifacts/merged/M artifacts/quantized/M M
+bash scripts/export_gguf.sh "$STAGING/merged" "$STAGING/gguf" final
 
 # 服务器上的部署冒烟：像素档对照、与 Transformers 的输出对照、演示界面
 $P scripts/deploy_smoke.py
 
 # 用 GGUF 对任意 JSONL 批量推理（自动启动/关闭本机 llama-server；也可用 --server 连接已运行的服务），输出格式同 predict_transformers.py
-$P scripts/predict_llamacpp.py --jsonl data/splits/v1/test.jsonl --experiment-id M_q4_512 \
-   --model artifacts/quantized/M/M-q4_k_m.gguf --mmproj artifacts/quantized/M/mmproj-M-f16.gguf --max-pixels 262144
+$P scripts/predict_llamacpp.py --jsonl data/annotations/real_v1.jsonl --experiment-id M_final_q4_512 \
+   --model "$STAGING/gguf/final-q4_k_m.gguf" --mmproj "$STAGING/gguf/mmproj-final-f16.gguf" \
+   --max-pixels 262144 --output runs/deploy_final/q4_512/predictions.jsonl
 ```
 
 llama.cpp 固定为 tag `b12425`（commit `18b74fa4`），依据见 `deploy/jetson/LLAMACPP_VERSION.md`。
@@ -100,7 +100,7 @@ llama.cpp 固定为 tag `b12425`（commit `18b74fa4`），依据见 `deploy/jets
 
 ```bash
 # 打包（默认只带 Q4_K_M；做量化对比时带全三档）
-INCLUDE_QUANTS=q4_k_m,q8_0,f16 bash scripts/make_jetson_bundle.sh artifacts/quantized/M release/jetson_bundle_M
+INCLUDE_QUANTS=q4_k_m,q8_0,f16 bash scripts/make_jetson_bundle.sh "$STAGING/gguf" "$STAGING/jetson_bundle_final"
 ```
 
 把 bundle 拷到板子上，按 `deploy/jetson/README.md` 依次运行 `00_probe.sh` 到 `04_app.sh`，再把 `logs/` 拷回服务器的 `runs/jetson/`。板端日志评测：

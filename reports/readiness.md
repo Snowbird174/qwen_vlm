@@ -1,4 +1,6 @@
-# 就绪报告（首轮）
+# 就绪报告
+
+2026-11-20 更新。50 张真实照片均已标注，含 9 个摆放组和 100 条 checklist。L40 上已完成 B0 三档分辨率和三档量化评测，见 `runs/comparison/`。器材框增强和固定三折划分已用全部数据生成和校验，见 `data/splits/cv3/`。正式训练和板端实测的进度见 `STATUS.md` 与 `docs/NEXT_STEPS.md`。
 
 日期：2026-11-16。分三类：**已验证**（有实际运行的日志或产物）、**已准备但未验证**、**等待用户材料**。本报告中的数字都来自合成数据或服务器冒烟，**不是实验结果**，不得写进结果表。
 
@@ -27,8 +29,7 @@
 
 | 项目 | 位置 | 缺什么才能验证 |
 | --- | --- | --- |
-| 正式训练 B1/M/A1/A2/A3 | `configs/train/*.yaml` | 真实数据。`base.yaml` 默认指向合成数据，正式训练用命令行覆盖；`max_steps=1000` 是占位，需要按训练集大小统一设定 |
-| 真实数据的采集、标注、划分 | `docs/data_collection.md`，`docs/annotation_guide.md` | 真实照片 |
+| 正式训练 B1/M/A1–A4 | `configs/train/*.yaml`，`scripts/run_cv.py` | 根据训练损失设定统一步数。`base.yaml` 默认步数是占位值 |
 | Jetson 构建与运行 | `deploy/jetson/00`–`04`，`release/jetson_bundle_base/`（1.9G，Q4_K_M + mmproj） | 用户在板上运行并传回日志 |
 | 板端量化/分辨率基准 | `deploy/jetson/03_bench.sh` | 同上；包里只有 Q4，测 Q8/F16 需把对应 GGUF 拷到板上 `models/` |
 | 摄像头演示 | `src/qwen_vlm/app/app.py`，`04_app.sh` | 服务器没有摄像头，只能在板上测 |
@@ -37,10 +38,8 @@
 
 ## 3. 等待用户材料（按优先级）
 
-1. **首批试采照片约 100 张**（约 20 个布置 × 5 个变体），按 `docs/data_collection.md` 拍，配一份标注 CSV（模板在 `data/annotations/templates/`）。拍完上传到 `data/raw/`。
-2. **在 Jetson 上运行 `00_probe.sh` 并传回日志**：先确认 JetPack/CUDA 版本、内存与 swap、Python、摄像头设备，再跑 `01`–`03`。
-3. **课程事项**：老师是否接受 Orin Nano 8GB 代替 "Jetson Nano"；截止时间；报告格式与提交渠道。
-4. **类别定义确认**：工具是否会有多件同类；"线缆"按独立收卷的一束、表笔线归入万用表，这个默认值是否符合你的实验室。
+1. 在 Jetson 上运行 `00_probe.sh` 并传回日志，确认 JetPack/CUDA、内存与 swap、Python 和摄像头后，再跑 `01`–`04`。
+2. 确认课程接受 Orin Nano 8GB，并核实截止时间、报告格式与提交渠道。
 
 ## 4. 风险
 
@@ -50,4 +49,4 @@
 4. **板端内存**：F16 语言权重 3.3G、mmproj 0.8G，再加 KV cache，8GB 统一内存可能放不下。先用 Q4 跑通，F16 若 OOM 就如实记录，改用 Q8 作为板端高精度参照。
 5. **Jetson 环境**：脚本假设 JetPack 6 / Python 3.10，需要 `python3-venv`，`01` 需要网络安装 gradio 等。如果板子没网，需要另外准备离线 wheel。
 6. **进程内存**：tegrastats 只有整机内存。如果需要进程级内存，要在 bench 脚本里额外采样 `/proc/<pid>/status`（后续可以补）。
-7. **unknown 的边界**：基础模型在合成图上大量输出 unknown（偏保守），真实照片上的行为还不清楚。B0 的错误分析决定训练的重点。
+7. **unknown 的边界**：B0 512² 在真实图上只召回 2/18 个 unknown 标签。合成遮挡针对这一问题补充监督。
