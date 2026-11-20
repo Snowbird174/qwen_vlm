@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """读取多次 eval 的 metrics.json，生成方法对比表和量化×像素预算矩阵。
 
-表格里的数字只来自这些 JSON。缺少的 B0/B1/M/A1-A3 或优化组合写“待测”。
+表格里的数字只来自这些 JSON。缺少的 B0/B1/M/A1-A4 或优化组合写“待测”。
 """
 
 from __future__ import annotations

@@ -23,9 +23,10 @@ from qwen_vlm.evaluation.latency import latency_from_predictions, throughput_fro
 from qwen_vlm.evaluation.metrics import METHODOLOGY_NOTES, evaluate, explain_sample, scalar_metrics
 from qwen_vlm.evaluation.tegrastats import parse_tegrastats_log, summarize_tegrastats
 
-METHOD_ORDER = ("B0", "B1", "M", "A1", "A2", "A3")
-QUANT_ORDER = ("F16", "Q8_0", "Q4_K_M")
+METHOD_ORDER = ("B0", "B1", "M", "A1", "A2", "A3", "A4")
+QUANT_ORDER = ("BF16", "F16", "Q8_0", "Q4_K_M")
 PIXEL_ORDER = (384, 512, 768)
+B0_TRANSFORMERS = {"B0_s001_r384", "B0_s001", "B0_s001_r768"}
 
 _BOOTSTRAP_KEYS = {
     ("checklist", "state_accuracy", "overall"): "checklist.state_accuracy",
@@ -487,10 +488,27 @@ def _cell_ratio(metrics: dict | None, path: tuple[str, ...], *, macro: bool = Fa
 
 
 def _lookup_method(runs: list[dict], experiment_id: str) -> dict | None:
-    matched = [run for run in runs if run.get("experiment_id") == experiment_id]
+    alias = "B0_s001" if experiment_id == "B0" else f"{experiment_id}_cv3"
+    matched = [run for run in runs if run.get("experiment_id") in {experiment_id, alias}]
     if len(matched) > 1:
         raise ValueError(f"experiment_id 重复，无法比较: {experiment_id}")
     return matched[0] if matched else None
+
+
+def _optimization_index(runs: list[dict]) -> dict[tuple[str, int], dict]:
+    index = {}
+    for run in runs:
+        quant = run.get("quantization")
+        if quant is None and run.get("experiment_id") in B0_TRANSFORMERS:
+            quant = "BF16"
+        pixel = run.get("pixel_budget")
+        if quant is None or pixel is None:
+            continue
+        key = (quant, pixel)
+        if key in index:
+            raise ValueError(f"量化与像素预算的组合重复: {key}")
+        index[key] = run
+    return index
 
 
 def render_comparison_md(runs: list[dict]) -> str:
@@ -512,29 +530,24 @@ def render_comparison_md(runs: list[dict]) -> str:
         lines.append("| " + label + " | " + " | ".join(cells) + " |")
     lines += [
         "",
-        "## 端侧优化矩阵",
+        "## 分辨率与量化矩阵",
         "",
         "行是量化，列是输入像素预算的边长。单元格依次为三状态准确率、误报齐全率、total_s 的 p50、RAM 已用均值。",
         "",
         "| 量化 \\ 像素 | " + " | ".join(f"{side}²" for side in PIXEL_ORDER) + " |",
         "| --- | " + " | ".join("---" for _ in PIXEL_ORDER) + " |",
     ]
-    index = {(run.get("quantization"), run.get("pixel_budget")): run for run in runs if run.get("quantization") and run.get("pixel_budget")}
-    seen = {}
-    for run in runs:
-        key = (run.get("quantization"), run.get("pixel_budget"))
-        if key[0] is None or key[1] is None:
-            continue
-        if key in seen:
-            raise ValueError(f"量化与像素预算的组合重复: {key}")
-        seen[key] = run
+    index = _optimization_index(runs)
     for quant in QUANT_ORDER:
         cells = []
         for pixel in PIXEL_ORDER:
-            run = seen.get((quant, pixel))
+            run = index.get((quant, pixel))
             cells.append(PENDING if run is None else _optimization_cell(run))
         lines.append("| " + quant + " | " + " | ".join(cells) + " |")
-    others = [run for run in runs if run.get("experiment_id") not in METHOD_ORDER]
+    method_ids = {
+        run["experiment_id"] for name in METHOD_ORDER if (run := _lookup_method(runs, name)) is not None
+    }
+    others = [run for run in runs if run.get("experiment_id") not in method_ids]
     if others:
         lines += ["", "## 其他实验", ""]
         for run in others:
@@ -559,7 +572,7 @@ def _optimization_cell(run: dict) -> str:
 
 def _write_method_csv(runs: list[dict], path: Path) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["metric", *METHOD_ORDER])
         for label, metric_path in METHOD_ROWS:
             row = [label]
@@ -570,16 +583,9 @@ def _write_method_csv(runs: list[dict], path: Path) -> None:
 
 
 def _write_optimization_csv(runs: list[dict], path: Path) -> None:
-    seen = {}
-    for run in runs:
-        key = (run.get("quantization"), run.get("pixel_budget"))
-        if key[0] is None or key[1] is None:
-            continue
-        if key in seen:
-            raise ValueError(f"量化与像素预算的组合重复: {key}")
-        seen[key] = run
+    index = _optimization_index(runs)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(
             [
                 "quantization",
@@ -592,7 +598,7 @@ def _write_optimization_csv(runs: list[dict], path: Path) -> None:
         )
         for quant in QUANT_ORDER:
             for pixel in PIXEL_ORDER:
-                run = seen.get((quant, pixel))
+                run = index.get((quant, pixel))
                 if run is None:
                     writer.writerow([quant, pixel, PENDING, PENDING, PENDING, PENDING])
                     continue
