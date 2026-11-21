@@ -4,7 +4,7 @@
 
 ## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-当前进度：任务 A、B、C 已完成并提交，工作区干净。**正式三折训练一次都还没跑**，`runs/comparison/comparison.md` 里除 B0 外全是“待测”。L40 空闲；项目盘 `/root/gpufree-data` 剩约 9.2 GiB，`/tmp` 剩约 17 GiB。
+当前进度：任务 A、B、C 已完成并提交，工作区干净。**正式三折训练一次都还没跑**，`runs/comparison/comparison.md` 里除 B0 外全是“待测”。L40 空闲；项目盘 `/root/gpufree-data` 已扩容到 99 GiB，剩约 59 GiB，空间不再是瓶颈。
 
 **用户手头暂时没有 Jetson，本轮只做云端能做的事**（第 1–5 步），板端第 6 步暂缓。课程要求与证据的对应关系见 `docs/coursework_requirements.md`。第 3、5 步是为了补上课程要求里的缺口：鲁棒性评估、技术报告、演示和答辩材料。
 
@@ -21,7 +21,7 @@ nohup $P scripts/run_cv.py --max-steps 50 > runs/logs/cv3_main.log 2>&1 &
 
 - 共 6 种方法 × 3 折 = 18 次训练加预测，脚本串行执行。M 的 30 步试跑用了约 3.3 分钟，据此估计每次 50 步训练加预测约 6–8 分钟，整轮约 2–3 小时。这是估算，以日志为准。
 - 中断后用原命令重跑，已完成的 adapter 和预测会复用。不要改步数、配置或划分；必须改时换新的 `--runs-root`，不要覆盖旧结果。
-- 每折结束后脚本会删 `checkpoints/`，只留 `adapter/`。磁盘紧张时可删 `work/cv3_pilot/*/checkpoints`（约 400 MB，试跑的残留）。
+- 每折结束后脚本会自动删除 `checkpoints/`，只留 `adapter/`。
 
 验收：
 
@@ -68,22 +68,22 @@ $P scripts/train.py --config configs/train/M.yaml --train-jsonl data/splits/full
    --no-validation --max-steps 50 --output-dir runs/M_final
 rm -rf runs/M_final/checkpoints
 
-# 合并与导出放在 /tmp（项目盘放不下合并权重加 GGUF）
+# 合并与导出都放在项目盘，沿用 base 的目录约定（这些目录已被 git 忽略）
 $P scripts/merge_lora.py --adapter runs/M_final/adapter --sample-jsonl data/annotations/real_v1.jsonl \
-   --merged-dir /tmp/qwen_vlm_export/merged --merge-check runs/M_final/merge_check.json
-$P scripts/export_gguf.py /tmp/qwen_vlm_export/merged /tmp/qwen_vlm_export/gguf final
-scripts/make_jetson_bundle.sh /tmp/qwen_vlm_export/gguf /tmp/qwen_vlm_export/bundle_final
-rm -rf /tmp/qwen_vlm_export/merged
+   --merged-dir artifacts/merged/final --merge-check runs/M_final/merge_check.json
+$P scripts/export_gguf.py artifacts/merged/final artifacts/quantized/final final
+scripts/make_jetson_bundle.sh artifacts/quantized/final release/jetson_bundle_final
 ```
 
 - 文件名必须带 `final` 标签（生成 `final-q4_k_m.gguf`、`mmproj-final-f16.gguf`），Jetson 脚本靠 `MODEL_TAG=final` 找模型。
-- 每一步开始前用 `df -h /tmp /root/gpufree-data` 复查空间。打包脚本检查项目盘剩余至少 5 GiB，并用硬链接引用模型，所以 bundle 必须和 GGUF 放在同一文件系统（`/tmp`）。
+- 空间：项目盘已扩容到约 59 GiB 可用。合并模型约 4.3 GiB，全套 GGUF 约 6.8 GiB，空间足够。合并权重可以保留，以后重新量化时不必再合并。打包脚本用硬链接引用 `artifacts/quantized/final/` 中的模型，所以 bundle 本身很小。
+- `/root/gpufree-data` 在关机后数据还在，但**释放实例时不保存**。最终 bundle 和 adapter 做好后，提醒用户下载备份。
 - 可以用 `scripts/predict_llamacpp.py` 让最终模型的 Q4_K_M 和 Q8_0 在真实 100 条上跑一遍，确认导出没坏。最终模型训练时见过这些图，这组数只能当导出检查，**不能当泛化指标写进报告**；泛化指标只用第 2 步的折外结果。
 
 - 交付物要求“源码、模型文件、部署说明”齐全：把 `runs/M_final/adapter/` 和 `merge_check.json` 复制进 bundle（例如 `models/adapter/`），再按脚本已有的 `SHA256SUMS` 格式重新计算校验和。
 - 各量化档的 GGUF 文件大小与设备无关，可以直接写进报告的资源部分。L40 上测到的延迟和显存**不能**当作 Jetson 的数字。
 
-验收：`runs/M_final/merge_check.json` 显示合并前后输出一致；bundle 内有 `final-q4_k_m.gguf`、`mmproj-final-f16.gguf`、adapter 和更新后的 `SHA256SUMS`；临时合并权重已删除。
+验收：`runs/M_final/merge_check.json` 显示合并前后输出一致；`release/jetson_bundle_final/` 内有 `final-q4_k_m.gguf`、`mmproj-final-f16.gguf`、adapter 和更新后的 `SHA256SUMS`。
 
 ### 第 5 步：技术报告初稿、演示与答辩材料（课程 Deliverables）
 
@@ -116,7 +116,7 @@ rm -rf /tmp/qwen_vlm_export/merged
 用户暂时没有 Jetson，接手模型不要做这一步，也不要用服务器数据代替。板子到手后，由用户按 `deploy/jetson/README.md` 操作：
 
 1. 先用已打好的 `release/jetson_bundle_base/` 跑 `00`–`03`，测原模型在板上的 3 种量化 × 3 种分辨率（`03_bench.sh` 默认就扫这 9 种组合，并记录 `tegrastats`）。
-2. 再用 `/tmp/qwen_vlm_export/bundle_final` 加上 `MODEL_TAG=final` 跑 `02`–`04`，`04` 用摄像头做演示并录视频。
+2. 再用 `release/jetson_bundle_final/` 加上 `MODEL_TAG=final` 跑 `02`–`04`，`04` 用摄像头做演示并录视频。
 3. 日志传回 `runs/jetson/`，再补全报告的板端章节（延迟、内存、功耗、优化前后对比）。
 
 板子型号已定：用户决定使用手上的 Jetson Orin Nano 8GB，不再向老师确认。截止时间、报告篇幅与排版格式仍待用户告知。
@@ -222,8 +222,8 @@ $P scripts/data_validate.py data/aug/v1/samples.jsonl
 ### 任务 E：选定最终模型并部署（之后）
 
 1. 将 `real_v1.jsonl` 和 `data/aug/v1/samples.jsonl` 合并为全量训练 JSONL，沿用正式实验的 M 配置和步数。用 `scripts/train.py --no-validation` 将 adapter 保存到 `runs/M_final/adapter/`。泛化指标使用前面的折外评测，最终模型用于部署演示。
-2. `scripts/merge_lora.py` 合并，检查代表性输入的合并一致性，然后导出 F16/Q8_0/Q4_K_M 和 mmproj。按现有脚本的 5 GiB 空间底线，约 4.3 GiB 的合并模型和 6.8 GiB 的 GGUF 应放在预先核实有约 16 GiB 可用空间的同一文件系统上。启动本轮时项目盘约 9.8 GiB，`/tmp` 约 18 GiB，可在导出前复查并用于临时合并与转换，确认产物后清理临时合并权重。
-3. 在 GGUF 所在文件系统上生成 bundle，打包脚本对模型文件使用硬链接。开发机空间不足时，先在临时盘完成转换与打包，再迁移到有足够空间的持久盘或交付给板端。
+2. `scripts/merge_lora.py` 合并，检查代表性输入的合并一致性，然后导出 F16/Q8_0/Q4_K_M 和 mmproj。项目盘已扩容到约 59 GiB 可用，合并模型（约 4.3 GiB）和 GGUF（约 6.8 GiB）直接放在 `artifacts/merged/final/` 和 `artifacts/quantized/final/`，具体命令见“本轮要做的事”第 4 步。
+3. 用 `scripts/make_jetson_bundle.sh` 生成 `release/jetson_bundle_final/`，打包脚本对模型文件使用硬链接，要求 bundle 和 GGUF 在同一文件系统上。
 4. 用户在 Jetson 上跑 `deploy/jetson/00`–`04`，最终 bundle 的 `02`–`04` 使用 `MODEL_TAG=final`。日志回传 `runs/jetson/`。默认 `03_bench.sh` 循环使用冒烟图片，可测延迟和资源。也可以对 `real_v1.jsonl` 在板端逐条推理，按部署说明保留 `sample_id`，回传预测与对应 `tegrastats`。对全量训练的最终模型，这批预测用于检查部署后的输出和性能。
 
 ## 3. 注意事项
