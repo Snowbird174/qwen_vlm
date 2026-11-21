@@ -71,6 +71,5 @@ envs/qwen_vlm/bin/python -m pytest -q tests
 
 ## 6. 还没确认的事
 
-- 老师是否接受用 Orin Nano 8GB 代替要求里写的 "Jetson Nano"。
-- 截止时间、报告格式、提交方式。
+- 截止时间、报告篇幅与排版格式、提交方式。（已定：板子用 Jetson Orin Nano 8GB，不再向老师确认；报告英文为正式版，另附中文翻译供用户校对。）
 - 拍摄时相机用的是自动曝光，以后最好改成手动锁定。

@@ -87,7 +87,13 @@ rm -rf /tmp/qwen_vlm_export/merged
 
 ### 第 5 步：技术报告初稿、演示与答辩材料（课程 Deliverables）
 
-1. **技术报告** `reports/technical_report.md`。动笔前先问用户报告语言和格式（课程原文未规定）。章节按课程要求排：
+1. **技术报告**：英文正式版 `reports/technical_report.md`，中文翻译 `reports/technical_report.zh.md` 供用户校对。
+   - 两版章节、表格、数字、图一一对应。先写英文，再逐段翻译成中文；中文版开头注明“以英文版为准”。英文版改动后要同步修改中文版。
+   - 术语首次出现时，中文版保留英文原词，例如“误报齐全率（false-complete rate）”，方便用户对照。
+   - 设备统一写 “Jetson Orin Nano 8GB”，在部署章说明它属于 Jetson Nano 系列。
+   - 篇幅和排版课程原文没有规定，先用 Markdown，之后按用户要求转换格式。
+   
+   章节按课程要求排：
    - 系统设计（任务、器材清单、整体流程）；
    - 模型原理（在 `docs/model_principles.md` 基础上补全）；
    - 改进方法（LoRA、成对辅助、困难负样本、unknown 监督、框引导合成数据）；
@@ -101,7 +107,7 @@ rm -rf /tmp/qwen_vlm_export/merged
    实验章参照 `reports/templates/`。数字只从 `runs/` 的 `metrics.json` 取。板端章节和板端数字全部写“待测（等待 Jetson 实测）”，不要用服务器数字顶替。
 2. **服务器上验证演示程序**：用最终模型的 Q4_K_M 在服务器上以图片模式启动 `src/qwen_vlm/app/app.py`，跑三类典型样例：器材齐全、有线缆但没万用表、遮挡。截图放进报告，作为板端演示前的备份证据。
 3. **演示视频脚本** `reports/demo_script.md`：逐个镜头写清楚。板子和摄像头的整体布置；齐全场景；拿走万用表但留下线缆；手遮住器材时模型回答 unknown；画面上显示延迟。拍摄要等板子到手。
-4. **答辩提纲** `reports/defense_outline.md`：用 5 分钟讲清问题、方法、结果。列出可能被问到的问题和答案，例如：为什么选 VLM 而不是 YOLO、为什么用 Orin Nano、数据只有 50 张怎么保证结论可信、合成图会不会造成泄漏、量化带来的精度和速度取舍。
+4. **答辩提纲** `reports/defense_outline.md`：用 5 分钟讲清问题、方法、结果。列出可能被问到的问题和答案，例如：为什么选 VLM 而不是 YOLO、为什么用 Orin Nano 8GB 跑 2B 的 VLM、数据只有 50 张怎么保证结论可信、合成图会不会造成泄漏、量化带来的精度和速度取舍。
 
 验收：报告初稿各章齐全，没有编造的数字；三份文件提交；`STATUS.md` 的 P6 行更新。
 
@@ -113,7 +119,7 @@ rm -rf /tmp/qwen_vlm_export/merged
 2. 再用 `/tmp/qwen_vlm_export/bundle_final` 加上 `MODEL_TAG=final` 跑 `02`–`04`，`04` 用摄像头做演示并录视频。
 3. 日志传回 `runs/jetson/`，再补全报告的板端章节（延迟、内存、功耗、优化前后对比）。
 
-另外请用户向老师确认：课程原文写的是 “Jetson Nano”，本项目用的是 Jetson Orin Nano 8GB，是否接受；同时问清截止时间和报告格式。
+板子型号已定：用户决定使用手上的 Jetson Orin Nano 8GB，不再向老师确认。截止时间、报告篇幅与排版格式仍待用户告知。
 
 ## 0. 当前状态（已完成，不要重做）
 

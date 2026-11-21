@@ -29,7 +29,7 @@
 | 原文 | 落实 |
 | --- | --- |
 | "Complete project source code, model files, and deployment instructions" | `release/`：源码、adapter、合并后模型、GGUF 及 SHA256、`deploy/jetson/README.md` |
-| "A technical report covering system design, model principles, deployment, optimization, experimental evaluation, and conclusions" | `reports/technical_report.md`，最终格式待定 |
+| "A technical report covering system design, model principles, deployment, optimization, experimental evaluation, and conclusions" | 英文正式版 `reports/technical_report.md`，中文校对版 `reports/technical_report.zh.md`；排版格式待定 |
 | "A live demonstration and oral defense using Jetson Nano" | 演示脚本和答辩提纲由 AI 准备；现场演示和答辩由用户本人完成 |
 | "Demonstration video" | 板端工作正常后录制；AI 提供脚本 |
 
@@ -37,7 +37,11 @@
 
 截止时间、报告篇幅和格式、提交平台、视频时长、评分权重、最低准确率或帧率、模型大小、数据集规模均未规定。本项目中出现的数字都是工程目标，不是课程要求。
 
+## 用户已定
+
+- 板子：使用我们手上的 Jetson Orin Nano 8GB（Jetson Nano 系列的 8GB 版本），不再向老师确认。报告中写准确型号 “Jetson Orin Nano 8GB”，并说明它属于 Jetson Nano 系列。
+- 报告语言：正式报告用英文 `reports/technical_report.md`，同时提供中文翻译 `reports/technical_report.zh.md` 供用户校对。
+
 ## 待用户确认
 
-- 原文写的是 "Jetson Nano"，本项目使用 Jetson Orin Nano 8GB。需要用户向老师确认是否接受。
-- 截止时间、报告格式和提交渠道。
+- 截止时间、报告篇幅与排版格式、提交渠道。
