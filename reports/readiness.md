@@ -6,6 +6,8 @@
 
 正式对比显示，六种 LoRA 方法的误报齐全率均为 2/31，B0 为 7/31，默认部署用 M。M 的决策准确率为 86/100，真实遮挡 unknown 召回为 1/14。消融、样本不足及逐样本复核见 `EXPERIMENTS.md`。
 
+最终 M 的 500 条训练样本通过校验并完成 50 步。代表性样本复核了合并前后和重新加载的文本一致性。L40 用最终导出的 Q4_K_M 和 Q8_0 各运行 100 条训练照片清单，输出全部可解析。`release/jetson_bundle_final/` 的 91 项 SHA256 全量通过。证据见 `runs/M_final/`。服务器图片界面和 Jetson Orin Nano 8GB 实测待完成。
+
 以下保留了 2026-11-16 的开发验证记录，冒烟指标仅用于复核链路。正式实验的真实数据结果见 `STATUS.md` 和 `EXPERIMENTS.md`。
 
 ## 1. 已验证
@@ -36,7 +38,7 @@
 | Jetson 构建与运行 | `deploy/jetson/00`–`04`，`release/jetson_bundle_base/`（1.9G，Q4_K_M + mmproj） | 用户在板上运行并传回日志 |
 | 板端量化/分辨率基准 | `deploy/jetson/03_bench.sh` | 同上；包里只有 Q4，测 Q8/F16 需把对应 GGUF 拷到板上 `models/` |
 | 摄像头演示 | `src/qwen_vlm/app/app.py`，`04_app.sh` | 服务器没有摄像头，只能在板上测 |
-| 合并后任务分数一致性 | `scripts/merge_lora.py` | 正式训练后，在 val 集上比较合并前后的任务指标（不能只看单样本） |
+| 合并后的独立评测 | `runs/M_final/merge_check.json` | 已检查代表性样本文本及服务器导出链路。最终 adapter 使用全量样本，独立光照与板端验证待测 |
 | 资源与延迟统计 | `src/qwen_vlm/evaluation/latency.py`，`tegrastats.py` | 板端日志（解析器只用格式示例测过） |
 
 ## 3. 等待用户材料（按优先级）

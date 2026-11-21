@@ -1,0 +1,156 @@
+{
+  "experiment_id": "M",
+  "git": {
+    "commit": "31f44b7ec46b78e27539594d7ed930c0fcc6d4db",
+    "dirty": true,
+    "note": "dirty"
+  },
+  "base_model_dir": "/root/gpufree-data/qwen_vlm/artifacts/base/Qwen3-VL-2B-Instruct",
+  "base_model_revision": "89644892e4d85e24eaac8bacfd4f463576704203",
+  "prompt_version": "v1",
+  "data": {
+    "train_jsonl": "/root/gpufree-data/qwen_vlm/data/splits/full_v1.jsonl",
+    "train_jsonl_sha256": "f36a53d6284a840e691f3ae3d1e62fcc513cfc19243aecf7e84d74a5c1d3671a",
+    "val_jsonl": null,
+    "val_jsonl_sha256": null,
+    "data_root": "/root/gpufree-data/qwen_vlm/data",
+    "split_manifest": null,
+    "split_manifest_sha256": null,
+    "n_train_samples_used": 500
+  },
+  "config": {
+    "experiment_id": "M",
+    "seed": 42,
+    "model_dir": "artifacts/base/Qwen3-VL-2B-Instruct",
+    "data": {
+      "root": "data",
+      "train_jsonl": "data/smoke/synthetic/splits/v0/train.jsonl",
+      "val_jsonl": "data/smoke/synthetic/splits/v0/val.jsonl",
+      "manifest": null,
+      "max_samples": null
+    },
+    "pixels": {
+      "max_pixels": 262144,
+      "min_pixels": 65536
+    },
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05
+    },
+    "optim": {
+      "lr": 0.0001,
+      "weight_decay": 0.0,
+      "lr_scheduler": "cosine",
+      "warmup_steps": null,
+      "warmup_ratio": 0.03,
+      "max_steps": 50,
+      "micro_batch_size": 1,
+      "grad_accum_steps": 16,
+      "max_grad_norm": 1.0,
+      "gradient_checkpointing": true,
+      "bf16": true
+    },
+    "save_steps": 200,
+    "save_total_limit": 1,
+    "cache_encodings": false,
+    "smoke_check": false,
+    "max_new_tokens": 128,
+    "mix": {
+      "include_unknown": true,
+      "aux_presence": "pairs",
+      "aux_ratio": 1.0,
+      "hard_negative_weight": 3.0,
+      "balance_states": true,
+      "epoch_size": null
+    },
+    "_config_path": "configs/train/M.yaml"
+  },
+  "seed": 42,
+  "max_steps": 50,
+  "steps_completed": 50,
+  "exposure_stats": {
+    "total_samples": 716,
+    "unique_images": 211,
+    "by_task": {
+      "checklist": 477,
+      "presence": 239
+    },
+    "by_category_state": {
+      "screwdriver": {
+        "present": 297,
+        "absent": 99,
+        "unknown": 149
+      },
+      "pliers": {
+        "present": 368,
+        "absent": 68,
+        "unknown": 68
+      },
+      "cable_bundle": {
+        "present": 361,
+        "absent": 71,
+        "unknown": 47
+      },
+      "multimeter": {
+        "present": 282,
+        "absent": 266,
+        "unknown": 37
+      },
+      "hammer": {
+        "present": 316,
+        "absent": 76,
+        "unknown": 119
+      }
+    },
+    "hard_negative_samples": 197,
+    "unknown_samples": 307,
+    "aux_presence_from_pairs": 239,
+    "pool_size": 716,
+    "n_checklist_pool": 500,
+    "n_presence_pool": 216,
+    "n_presence_before_cap": 216,
+    "n_presence_generated": 216,
+    "n_presence_existing": 0,
+    "aux_ratio_cap": 500
+  },
+  "environment": {
+    "python": "3.12.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.5.4",
+    "peft": "0.21.3",
+    "accelerate": "1.15.0",
+    "gpu": "NVIDIA L40"
+  },
+  "lora_target_pattern": "model\\.language_model\\.layers\\.\\d+\\.(?:self_attn\\.(?:q|k|v|o)_proj|mlp\\.(?:gate|up|down)_proj)",
+  "lora_matched_modules": 196,
+  "lora_matched_examples": [
+    "model.language_model.layers.0.self_attn.q_proj",
+    "model.language_model.layers.0.self_attn.k_proj",
+    "model.language_model.layers.0.self_attn.v_proj",
+    "model.language_model.layers.0.self_attn.o_proj",
+    "model.language_model.layers.27.mlp.up_proj",
+    "model.language_model.layers.27.mlp.down_proj"
+  ],
+  "trainable": {
+    "trainable_params": 17432576,
+    "total_params": 2144964608,
+    "trainable_ratio": 0.008127209155331667,
+    "trainable_tensors": 392,
+    "dtypes": [
+      "torch.float32"
+    ]
+  },
+  "artifacts": {
+    "run_dir": "/root/gpufree-data/qwen_vlm/runs/M_final",
+    "train_log": "/root/gpufree-data/qwen_vlm/runs/M_final/train_log.jsonl",
+    "trainable_params": "/root/gpufree-data/qwen_vlm/runs/M_final/trainable_params.txt",
+    "named_modules": "/root/gpufree-data/qwen_vlm/runs/M_final/named_modules.txt"
+  },
+  "loss_first": 0.2807329232455231,
+  "loss_last": 0.015577498110815213,
+  "vision_logits_max_abs_diff": null,
+  "peak_gpu_memory_allocated_bytes": 5807351296,
+  "peak_gpu_memory_reserved_bytes": 5974786048,
+  "error": null
+}

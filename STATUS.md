@@ -1,6 +1,6 @@
 # 项目状态
 
-更新于 2026-11-21。正式三折、消融和鲁棒性已复核，恢复命令见 [本轮计划](docs/NEXT_STEPS.md)。
+更新于 2026-11-21。正式三折、鲁棒性和最终模型导出已复核，恢复命令见 [本轮计划](docs/NEXT_STEPS.md)。
 
 | 阶段 | 内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
@@ -18,6 +18,7 @@
 | P3 | 对比与部署选择 | 完成 | B0 误报齐全 7/31，六种 LoRA 方法均为 2/31。M 决策准确率 86/100，unknown 召回 1/18，按规则保留 M。见 `EXPERIMENTS.md` |
 | P3 | 鲁棒性条件 | 27/27 组已复核 | B0、B1、M 各 9 档，每档 100 条。汇总见 `EXPERIMENTS.md`，产物见 `runs/robust/` |
 | P3 | 评测代码（全部任务指标、bootstrap、出表） | 已验证（手算单测） | `src/qwen_vlm/evaluation/`，`tests/test_metrics.py` |
+| P4 | 最终 M、合并与导出 | 已验证 | 全量 500 条训练 50 步，合并一致，Q4/Q8 各 100 条导出检查，部署包 91 项 SHA256 校验通过。见 `runs/M_final/` |
 | P4 | 量化与像素档的板端实测 | 等待用户 | `deploy/jetson/03_bench.sh` |
 | P5 | 摄像头演示 | 已准备未验证 | 服务器上图片模式已跑通；摄像头只能在板上测 |
 | P6 | 报告、视频、答辩材料 | 未开始 | 骨架：`docs/model_principles.md`，`reports/templates/` |

@@ -4,7 +4,7 @@
 
 ## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-任务 A、B、C 的数据与工具已完成。2026-11-21 完成了正式三折、对比复核和 27 组鲁棒性评测，按规则保留 M。接下来执行第 4 步。
+任务 A、B、C 的数据与工具已完成。2026-11-21 已完成正式三折、对比复核、27 组鲁棒性评测和最终 M 模型导出。接下来完成报告、图片模式演示和答辩资料。
 
 **用户手头暂时没有 Jetson，本轮只做云端能做的事**（第 1–5 步），板端第 6 步暂缓。课程要求与证据的对应关系见 `docs/coursework_requirements.md`。第 3、5 步是为了补上课程要求里的缺口：鲁棒性评估、技术报告、演示和答辩材料。
 
@@ -76,19 +76,29 @@ printf '%s\n' "$!" > runs/logs/robust_cv3.pid.log
 
 **选模型规则（看结果前定好，不要事后改）**：默认部署 M。只有当另一种方法的误报齐全率比 M 低、且决策准确率不比 M 差时，才停下来把对比交给用户决定是否换。不在测试集上再调任何参数。
 
+**已完成。** 全量训练 JSONL 为 500 条、250 张、0 错误，SHA256 `f36a53d6284a840e691f3ae3d1e62fcc513cfc19243aecf7e84d74a5c1d3671a`。M 的 50 步训练正常结束，日志 `runs/logs/train_M_final.log`。代表性样本合并前、合并后与重新加载的贪心文本一致。最终 Q4_K_M、Q8_0 在 L40 分别完成 100 条训练照片导出检查并全部解析成功。合并、导出和打包日志为 `runs/logs/merge_M_final.log`、`runs/logs/export_M_final.log`、`runs/logs/bundle_M_final.log`。
+
+交付目录 `release/jetson_bundle_final/` 已核对 91 个文件的 SHA256。包内含三档语言 GGUF、F16 mmproj、最终 adapter、合并证据、部署说明与项目源码快照 `31f44b7`；归档校验表在 `runs/M_final/bundle_SHA256SUMS`。下载时同时备份 `runs/M_final/adapter/` 与整个 bundle。重跑时先核对 `runs/M_final/run_manifest.json` 和 adapter，完整训练结果可直接从合并继续。
+
 ```bash
 # 全量训练数据：100 条真实 + 400 条合成，已验证 0 错误
 cat data/annotations/real_v1.jsonl data/aug/v1/samples.jsonl > data/splits/full_v1.jsonl
 $P scripts/data_validate.py data/splits/full_v1.jsonl
-$P scripts/train.py --config configs/train/M.yaml --train-jsonl data/splits/full_v1.jsonl \
-   --no-validation --max-steps 50 --output-dir runs/M_final
+nohup $P -Bu scripts/train.py --config configs/train/M.yaml --train-jsonl data/splits/full_v1.jsonl \
+   --no-validation --max-steps 50 --output-dir runs/M_final >> runs/logs/train_M_final.log 2>&1 < /dev/null &
+printf '%s\n' "$!" > runs/logs/train_M_final.pid.log
+```
+
+训练正常结束并检查 adapter 后运行以下命令。
+
+```bash
 rm -rf runs/M_final/checkpoints
 
 # 合并与导出都放在项目盘，沿用 base 的目录约定（这些目录已被 git 忽略）
 $P scripts/merge_lora.py --adapter runs/M_final/adapter --sample-jsonl data/annotations/real_v1.jsonl \
    --merged-dir artifacts/merged/final --merge-check runs/M_final/merge_check.json
 $P scripts/export_gguf.py artifacts/merged/final artifacts/quantized/final final
-scripts/make_jetson_bundle.sh artifacts/quantized/final release/jetson_bundle_final
+INCLUDE_QUANTS=q4_k_m,q8_0,f16 scripts/make_jetson_bundle.sh artifacts/quantized/final release/jetson_bundle_final
 ```
 
 - 文件名必须带 `final` 标签（生成 `final-q4_k_m.gguf`、`mmproj-final-f16.gguf`），Jetson 脚本靠 `MODEL_TAG=final` 找模型。

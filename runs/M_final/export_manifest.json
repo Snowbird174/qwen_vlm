@@ -1,0 +1,136 @@
+{
+  "tag": "final",
+  "hf_model_dir": "/root/gpufree-data/qwen_vlm/artifacts/merged/final",
+  "hf_revision": null,
+  "llamacpp_tag": "b12425",
+  "llamacpp_commit": "18b74fa41dcac1f55ae1371fe58153f7225941f6",
+  "conversion": {
+    "python": "/root/gpufree-data/qwen_vlm/envs/qwen_vlm/bin/python",
+    "python_version": "3.12.16",
+    "torch": "2.11.0+cu130",
+    "transformers": "5.5.4",
+    "note": "转换使用 envs/qwen_vlm（已有 torch 2.11 CUDA 与 transformers 5.5.4），进程内 CUDA_VISIBLE_DEVICES 为空，权重在 CPU 上读取。没有把 CPU 版 torch 和 llama.cpp 要求的 transformers==4.57.6 装进 envs/gguf，因为那一套依赖大约 1.5–2GB，会挤占 GGUF 的磁盘预算。sentencepiece 若缺失，只装到 work/deploy_pydeps，不改共享环境。"
+  },
+  "precision": {
+    "language_f16": "F16",
+    "language_q8_0": "Q8_0",
+    "language_q4_k_m": "Q4_K_M",
+    "mmproj": "F16",
+    "statement": "mmproj 视觉部分是 F16；Q4_K_M / Q8_0 只作用于语言 GGUF。"
+  },
+  "files": [
+    {
+      "name": "final-f16.gguf",
+      "role": "language",
+      "quant": "F16",
+      "note": "语言模型 float16。这不是整模的精度。",
+      "bytes": 3447350400,
+      "sha256": "045ebe9340c6db975895346aacd58005640eb3fef284b183ef3cf191393800a8",
+      "gguf_metadata": {
+        "general.architecture": "qwen3vl",
+        "general.name": "Final",
+        "general.file_type": 1,
+        "qwen3vl.n_deepstack_layers": 3,
+        "tokenizer.chat_template": {
+          "present": true,
+          "chars": 5292
+        },
+        "clip.projector_type": null,
+        "clip.vision.is_deepstack_layers": null,
+        "clip.vision.patch_size": null,
+        "clip.vision.spatial_merge_size": null
+      }
+    },
+    {
+      "name": "final-q8_0.gguf",
+      "role": "language",
+      "quant": "Q8_0",
+      "note": "只量化语言权重。mmproj 仍是 F16。",
+      "bytes": 1834427520,
+      "sha256": "c62906d2a2feb7b9b428d7c0537df875bdb6d484e1eeedca2da6aa675a28d9ef",
+      "gguf_metadata": {
+        "general.architecture": "qwen3vl",
+        "general.name": "Final",
+        "general.file_type": 7,
+        "qwen3vl.n_deepstack_layers": 3,
+        "tokenizer.chat_template": {
+          "present": true,
+          "chars": 5292
+        },
+        "clip.projector_type": null,
+        "clip.vision.is_deepstack_layers": null,
+        "clip.vision.patch_size": null,
+        "clip.vision.spatial_merge_size": null
+      }
+    },
+    {
+      "name": "final-q4_k_m.gguf",
+      "role": "language",
+      "quant": "Q4_K_M",
+      "note": "只量化语言权重。mmproj 仍是 F16，不能把整个 VLM 说成 INT4。",
+      "bytes": 1107410048,
+      "sha256": "ebbb2b33e2b607a52f9a84d65035f9e44b8b8601c5a00a36c58ef09546a52cbc",
+      "gguf_metadata": {
+        "general.architecture": "qwen3vl",
+        "general.name": "Final",
+        "general.file_type": 15,
+        "qwen3vl.n_deepstack_layers": 3,
+        "tokenizer.chat_template": {
+          "present": true,
+          "chars": 5292
+        },
+        "clip.projector_type": null,
+        "clip.vision.is_deepstack_layers": null,
+        "clip.vision.patch_size": null,
+        "clip.vision.spatial_merge_size": null
+      }
+    },
+    {
+      "name": "mmproj-final-f16.gguf",
+      "role": "mmproj",
+      "quant": "F16",
+      "note": "视觉编码器、merger 和 DeepStack 投影，保持 F16，未经过 llama-quantize。",
+      "bytes": 819394784,
+      "sha256": "96671dad15b78c2a36e5280440997dc5f4c4a0f88ad7894d6934ae0dff0174d3",
+      "gguf_metadata": {
+        "general.architecture": "clip",
+        "general.name": "Final",
+        "general.file_type": 1,
+        "qwen3vl.n_deepstack_layers": null,
+        "tokenizer.chat_template": null,
+        "clip.projector_type": "qwen3vl_merger",
+        "clip.vision.is_deepstack_layers": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "clip.vision.patch_size": 16,
+        "clip.vision.spatial_merge_size": 2
+      }
+    }
+  ],
+  "disk_free_bytes_after_quantize": 49417732096,
+  "language_f16_deleted_after_quantize": false,
+  "disk_free_bytes_final": 49417723904
+}

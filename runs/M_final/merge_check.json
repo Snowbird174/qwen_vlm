@@ -1,0 +1,37 @@
+{
+  "adapter_dir": "/root/gpufree-data/qwen_vlm/runs/M_final/adapter",
+  "base_model_dir": "/root/gpufree-data/qwen_vlm/artifacts/base/Qwen3-VL-2B-Instruct",
+  "merged_dir": "/root/gpufree-data/qwen_vlm/artifacts/merged/final",
+  "sample_id": "s001_l001_v001_q01",
+  "task": "checklist",
+  "max_pixels": 262144,
+  "min_pixels": 65536,
+  "text_before": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"unknown\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+  "text_merged_in_memory": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"unknown\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+  "text_reloaded": "{\"item_states\": {\"screwdriver\": \"present\", \"pliers\": \"present\", \"cable_bundle\": \"unknown\", \"multimeter\": \"present\", \"hammer\": \"present\"}}",
+  "greedy_text_match": true,
+  "logits_max_abs_error_in_memory": 2.3125,
+  "logits_max_abs_error_reloaded": 2.3125,
+  "copied_small_files": [
+    "chat_template.json",
+    "preprocessor_config.json",
+    "vocab.json",
+    "merges.txt",
+    "video_preprocessor_config.json"
+  ],
+  "saved_files": [
+    "chat_template.jinja",
+    "chat_template.json",
+    "config.json",
+    "generation_config.json",
+    "merges.txt",
+    "model.safetensors",
+    "preprocessor_config.json",
+    "processor_config.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "video_preprocessor_config.json",
+    "vocab.json"
+  ],
+  "merged_deleted": false
+}

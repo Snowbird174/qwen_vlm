@@ -1,0 +1,23 @@
+{
+  "device": "NVIDIA L40",
+  "purpose": "export verification on training photographs",
+  "gold_sha256": "5e8673a72c86c0a5a6569676736d34057496734c48e93ac66a6b2a333aa7e37e",
+  "checks": {
+    "q4_k_m": {
+      "records": 100,
+      "parse_status": {
+        "ok": 100
+      },
+      "predictions": "runs/M_final/q4_k_m/predictions.jsonl",
+      "predictions_sha256": "41406dc89efa113fcc35d7d73602cf1b932a43ddaf7c2b15fc61b008ed14c1d8"
+    },
+    "q8_0": {
+      "records": 100,
+      "parse_status": {
+        "ok": 100
+      },
+      "predictions": "runs/M_final/q8_0/predictions.jsonl",
+      "predictions_sha256": "0eaa04c5a54a4c62c7a34c94d62734a2869c42a97524d597875dfd57fa37ea87"
+    }
+  }
+}
