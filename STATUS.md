@@ -1,6 +1,6 @@
 # 项目状态
 
-更新于 2026-11-21。正式三折、鲁棒性和最终模型导出已复核，恢复命令见 [本轮计划](docs/NEXT_STEPS.md)。
+更新于 2026-11-21。本轮服务器任务第 1–5 步完成。Jetson Orin Nano 8GB 板端实测、现场演示和视频录制待设备到手。复现与恢复命令见 [本轮计划](docs/NEXT_STEPS.md)。
 
 | 阶段 | 内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
@@ -20,5 +20,6 @@
 | P3 | 评测代码（全部任务指标、bootstrap、出表） | 已验证（手算单测） | `src/qwen_vlm/evaluation/`，`tests/test_metrics.py` |
 | P4 | 最终 M、合并与导出 | 已验证 | 全量 500 条训练 50 步，合并一致，Q4/Q8 各 100 条导出检查，部署包 91 项 SHA256 校验通过。见 `runs/M_final/` |
 | P4 | 量化与像素档的板端实测 | 等待用户 | `deploy/jetson/03_bench.sh` |
-| P5 | 摄像头演示 | 已准备未验证 | 服务器上图片模式已跑通；摄像头只能在板上测 |
-| P6 | 报告、视频、答辩材料 | 未开始 | 骨架：`docs/model_principles.md`，`reports/templates/` |
+| P5 | 最终 Q4_K_M 图片模式 | L40 上已验证 | 齐全、缺万用表且有线缆、手部遮挡三类。实际输出及四张截图见 `runs/M_final/demo/image_mode_check.json` 和报告 |
+| P5 | 摄像头、现场演示与视频录制 | 待测、待录 | `deploy/jetson/04_app.sh`，`reports/demo_script.md` |
+| P6 | 英文报告、中文逐段校对版、演示脚本、答辩提纲 | 完成 | `reports/technical_report.md`、`reports/technical_report.zh.md`、`reports/demo_script.md`、`reports/defense_outline.md` |

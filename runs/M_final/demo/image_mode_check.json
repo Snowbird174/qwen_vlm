@@ -1,0 +1,163 @@
+{
+  "device": "NVIDIA L40",
+  "language_gguf": "final-q4_k_m.gguf",
+  "mmproj": "mmproj-final-f16.gguf",
+  "pixel_budget": 262144,
+  "question_zh": "按照本次实验清单，还缺少什么器材？",
+  "input_mode": "saved image",
+  "purpose": "application verification on training photographs",
+  "cases": [
+    {
+      "case": "complete",
+      "photo": "v001",
+      "source_image_path": "raw/session_001/session_001_20261118_153745_750016_4e0334.png",
+      "gold_item_states": {
+        "cable_bundle": "present",
+        "hammer": "present",
+        "multimeter": "present",
+        "pliers": "present",
+        "screwdriver": "present"
+      },
+      "expected_decision": "complete",
+      "predicted_item_states": {
+        "screwdriver": "present",
+        "pliers": "present",
+        "cable_bundle": "unknown",
+        "multimeter": "present",
+        "hammer": "present"
+      },
+      "ui_decision": "unknown",
+      "ui_answer": "线缆是否齐备暂时无法确认。",
+      "ui_timing": "总耗时 1.267 秒；解析 ok；重试 0 次；生成 40 token；prompt 507 token；prefill 0.161 秒；生成 0.119 秒。",
+      "ui_total_s": 1.267,
+      "parse_status": "ok",
+      "input_checklist": [
+        "screwdriver",
+        "pliers",
+        "cable_bundle",
+        "multimeter",
+        "hammer"
+      ],
+      "screenshot": "reports/figures/demo_complete.png",
+      "screenshot_pixels": [
+        1425,
+        2318
+      ],
+      "screenshot_sha256": "188efeffa0febbdc08f222d5c0738dfe4e8c0152ba8d055d8ab159101b214d66"
+    },
+    {
+      "case": "meter_missing",
+      "photo": "v014",
+      "source_image_path": "raw/session_001/session_001_20261118_154242_630807_8818df.png",
+      "gold_item_states": {
+        "cable_bundle": "present",
+        "hammer": "present",
+        "multimeter": "absent",
+        "pliers": "present",
+        "screwdriver": "present"
+      },
+      "expected_decision": "incomplete",
+      "predicted_item_states": {
+        "screwdriver": "present",
+        "pliers": "present",
+        "cable_bundle": "present",
+        "multimeter": "absent",
+        "hammer": "present"
+      },
+      "ui_decision": "incomplete",
+      "ui_answer": "缺少万用表。",
+      "ui_timing": "总耗时 1.183 秒；解析 ok；重试 0 次；生成 41 token；prompt 403 token；prefill 0.053 秒；生成 0.121 秒。",
+      "ui_total_s": 1.183,
+      "parse_status": "ok",
+      "input_checklist": [
+        "screwdriver",
+        "pliers",
+        "cable_bundle",
+        "multimeter",
+        "hammer"
+      ],
+      "screenshot": "reports/figures/demo_meter_missing.png",
+      "screenshot_pixels": [
+        1425,
+        2318
+      ],
+      "screenshot_sha256": "0a032f2cbfa614083d0704df8801a7903ceff6ef31dd955205337ddd87f670da"
+    },
+    {
+      "case": "occlusion",
+      "photo": "v041",
+      "source_image_path": "raw/session_001/session_001_20261118_154712_392184_e3ae70.png",
+      "gold_item_states": {
+        "cable_bundle": "present",
+        "hammer": "present",
+        "multimeter": "present",
+        "pliers": "present",
+        "screwdriver": "unknown"
+      },
+      "expected_decision": "unknown",
+      "predicted_item_states": {
+        "screwdriver": "unknown",
+        "pliers": "present",
+        "cable_bundle": "unknown",
+        "multimeter": "present",
+        "hammer": "present"
+      },
+      "ui_decision": "unknown",
+      "ui_answer": "螺丝刀、线缆是否齐备暂时无法确认。",
+      "ui_timing": "总耗时 1.189 秒；解析 ok；重试 0 次；生成 40 token；prompt 403 token；prefill 0.039 秒；生成 0.118 秒。",
+      "ui_total_s": 1.189,
+      "parse_status": "ok",
+      "input_checklist": [
+        "screwdriver",
+        "pliers",
+        "cable_bundle",
+        "multimeter",
+        "hammer"
+      ],
+      "screenshot": "reports/figures/demo_occlusion.png",
+      "screenshot_pixels": [
+        1425,
+        2318
+      ],
+      "screenshot_sha256": "62f52a590bf87139e84b8a1b80dda05c93994d72cdf3c2e9e9a6b2a6ce784e2b"
+    },
+    {
+      "case": "complete_clear",
+      "photo": "v040",
+      "source_image_path": "raw/session_001/session_001_20261118_154636_064709_19a4e0.png",
+      "gold_item_states": {
+        "cable_bundle": "present",
+        "hammer": "present",
+        "multimeter": "present",
+        "pliers": "present",
+        "screwdriver": "present"
+      },
+      "expected_decision": "complete",
+      "predicted_item_states": {
+        "screwdriver": "present",
+        "pliers": "present",
+        "cable_bundle": "present",
+        "multimeter": "present",
+        "hammer": "present"
+      },
+      "ui_decision": "complete",
+      "ui_answer": "所需器材齐全：螺丝刀、钳子、线缆、万用表、锤子。",
+      "ui_timing": "总耗时 1.214 秒；解析 ok；重试 0 次；生成 40 token；prompt 507 token；prefill 0.161 秒；生成 0.118 秒。",
+      "ui_total_s": 1.214,
+      "parse_status": "ok",
+      "input_checklist": [
+        "screwdriver",
+        "pliers",
+        "cable_bundle",
+        "multimeter",
+        "hammer"
+      ],
+      "screenshot": "reports/figures/demo_complete_clear.png",
+      "screenshot_pixels": [
+        1425,
+        2318
+      ],
+      "screenshot_sha256": "05ff31723d7c73b9b5ef0aadb1f739cb533927ce7a7991d34b64ed5ea4e77a71"
+    }
+  ]
+}

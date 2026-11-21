@@ -4,7 +4,7 @@
 
 ## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-任务 A、B、C 的数据与工具已完成。2026-11-21 已完成正式三折、对比复核、27 组鲁棒性评测和最终 M 模型导出。接下来完成报告、图片模式演示和答辩资料。
+2026-11-21 已完成本轮第 1–5 步，含正式三折、对比复核、27 组鲁棒性评测、最终 M 模型导出、服务器图片演示和报告交付。第 6 步待 Jetson Orin Nano 8GB 到手。`release/jetson_bundle_final/` 与 `runs/M_final/adapter/` 请在实例释放前下载备份。
 
 **用户手头暂时没有 Jetson，本轮只做云端能做的事**（第 1–5 步），板端第 6 步暂缓。课程要求与证据的对应关系见 `docs/coursework_requirements.md`。第 3、5 步是为了补上课程要求里的缺口：鲁棒性评估、技术报告、演示和答辩材料。
 
@@ -113,6 +113,22 @@ INCLUDE_QUANTS=q4_k_m,q8_0,f16 scripts/make_jetson_bundle.sh artifacts/quantized
 
 ### 第 5 步：技术报告初稿、演示与答辩材料（课程 Deliverables）
 
+**已完成。** 英文正式版 `reports/technical_report.md`、中文逐段校对版 `reports/technical_report.zh.md`、视频脚本 `reports/demo_script.md` 和五分钟答辩提纲 `reports/defense_outline.md` 均已交付。最终 Q4_K_M 以 512² 在 L40 的 Gradio 图片模式验证了三类场景。`v001` 齐全但线缆输出为 unknown，补测的清晰齐全图 `v040` 正确判齐全。`v014` 正确判缺万用表，`v041` 正确判无法确认，但多报了线缆 unknown。两版报告保留四张原始输出截图。证据见 `runs/M_final/demo/image_mode_check.json`。
+
+复现时先加载 `env/activate.sh`，启动下列本机服务。另一终端加载相同环境并启动 Gradio，在“读取保存图片”模式勾选五项即可。
+
+```bash
+vendor/llama.cpp/build/bin/llama-server \
+  -m artifacts/quantized/final/final-q4_k_m.gguf \
+  --mmproj artifacts/quantized/final/mmproj-final-f16.gguf \
+  --host 127.0.0.1 --port 8097 --jinja --temp 0 -c 4096 -ngl 99 -b 2048 -ub 2048 \
+  --image-min-tokens 64 --image-max-tokens 256 --no-warmup --fit off
+```
+
+```bash
+envs/qwen_vlm/bin/python -m qwen_vlm.app.app --server http://127.0.0.1:8097 --pixels 512
+```
+
 1. **技术报告**：英文正式版 `reports/technical_report.md`，中文翻译 `reports/technical_report.zh.md` 供用户校对。
    - 两版章节、表格、数字、图一一对应。先写英文，再逐段翻译成中文；中文版开头注明“以英文版为准”。英文版改动后要同步修改中文版。
    - 术语首次出现时，中文版保留英文原词，例如“误报齐全率（false-complete rate）”，方便用户对照。
@@ -135,7 +151,7 @@ INCLUDE_QUANTS=q4_k_m,q8_0,f16 scripts/make_jetson_bundle.sh artifacts/quantized
 3. **演示视频脚本** `reports/demo_script.md`：逐个镜头写清楚。板子和摄像头的整体布置；齐全场景；拿走万用表但留下线缆；手遮住器材时模型回答 unknown；画面上显示延迟。拍摄要等板子到手。
 4. **答辩提纲** `reports/defense_outline.md`：用 5 分钟讲清问题、方法、结果。列出可能被问到的问题和答案，例如：为什么选 VLM 而不是 YOLO、为什么用 Orin Nano 8GB 跑 2B 的 VLM、数据只有 50 张怎么保证结论可信、合成图会不会造成泄漏、量化带来的精度和速度取舍。
 
-验收：报告初稿各章齐全，没有编造的数字；三份文件提交；`STATUS.md` 的 P6 行更新。
+验收：两版报告、演示脚本与答辩提纲共四份文档已提交。章节、段落、表格、数字与截图逐项核对。`STATUS.md` 的 P6 行已更新。
 
 ### 第 6 步（暂缓）：Jetson 实测
 

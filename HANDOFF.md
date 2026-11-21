@@ -9,27 +9,24 @@
 | 部分 | 状态 |
 | --- | --- |
 | 环境、模型下载、接口定义 | 完成 |
-| 训练 / 评测 / 转 GGUF / 演示界面 | 端到端冒烟已通过，真实实验产物见 `STATUS.md` |
-| Jetson 部署脚本和部署包 | 写好了，**还没在板子上跑过** |
+| 训练 / 评测 / 转 GGUF / 演示界面 | 服务器第 1–5 步已完成，实际产物见 `STATUS.md` |
+| Jetson Orin Nano 8GB | 最终部署包 SHA256 校验通过，实机、摄像头及视频待测、待录 |
 | 真实照片 | `data/raw/session_001/` 共 50 张、9 个摆放组。状态与器材框已标注，用户已确认结束采集 |
 | 原模型真实基线 | 512² 已评测 100 条 checklist，决策准确率 80/100，误报齐全 7/31，unknown 召回 2/18。见 `runs/B0_s001/eval/` |
 | 正式三折 | B1、M、A1–A4 的 18/18 折已核对，每种方法 100 条折外预测。训练产物 `runs/cv3_folds/`，运行日志 `runs/logs/cv3_main.log` |
 | 对比与模型选择 | 六种 LoRA 方法均为 2/31 误报齐全，按预定规则保留 M。详见 `runs/comparison/` 和 `EXPERIMENTS.md` |
 | 鲁棒性 | 27/27 组已验收。M 在 `clean`、重度暗光、重度模糊分别判对 87/100、79/100、78/100。产物 `runs/robust/`，恢复命令见 `docs/NEXT_STEPS.md` |
 | 最终 M | 全量 500 条完成 50 步。合并检查通过，已导出三档 GGUF。`runs/M_final/adapter/` 和 `release/jetson_bundle_final/` 均需在实例释放前备份 |
+| 报告与演示 | `reports/technical_report.md`、`reports/technical_report.zh.md`、`reports/demo_script.md` 和 `reports/defense_outline.md` 已完成。真实图片模式证据见 `runs/M_final/demo/` |
 
 当前里程碑见 `STATUS.md`，运行命令和恢复位置见 `docs/NEXT_STEPS.md`。接手时先核对运行目录下的 manifest 和日志。
 
-## 2. 接下来按顺序做
+## 2. 本轮产物与下一步
 
-B0 的服务器分辨率和量化扫描、框引导合成训练图、固定三折划分及训练预算试跑均已完成。本轮按 `docs/NEXT_STEPS.md` 开头的顺序推进。
+B0 的服务器分辨率和量化扫描、框引导合成训练图、固定三折划分以及 `docs/NEXT_STEPS.md` 本轮第 1–5 步均已完成。正式模型选择沿用 M。
 
-1. 按统一 50 步预算运行 B1、M、A1–A4 共 18 次正式训练与折外预测。
-2. 汇总对比、消融和失败案例，复核部署模型是否触发用户决策条件。
-3. 完成真实子集与模拟干扰的鲁棒性评测。
-4. 训练选定的最终模型，合并、导出 GGUF、打包并校验。
-5. 完成英文技术报告及中文逐段校对版、服务器图片演示、视频脚本及答辩提纲。
-6. Jetson Orin Nano 8GB 实测暂缓，待用户拿到板子后运行 `deploy/jetson/00`–`04`。
+1. 释放实例前备份最终 adapter、部署包和项目报告。部署包中 `SHA256SUMS` 已覆盖 91 个文件。
+2. 用户拿到 Jetson Orin Nano 8GB 后，按 `deploy/jetson/README.md` 运行 `00`–`04`。当前课程的板端实测、现场演示和录像待完成。
 
 ## 3. 怎么开始
 

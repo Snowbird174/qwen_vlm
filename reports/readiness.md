@@ -6,7 +6,9 @@
 
 正式对比显示，六种 LoRA 方法的误报齐全率均为 2/31，B0 为 7/31，默认部署用 M。M 的决策准确率为 86/100，真实遮挡 unknown 召回为 1/14。消融、样本不足及逐样本复核见 `EXPERIMENTS.md`。
 
-最终 M 的 500 条训练样本通过校验并完成 50 步。代表性样本复核了合并前后和重新加载的文本一致性。L40 用最终导出的 Q4_K_M 和 Q8_0 各运行 100 条训练照片清单，输出全部可解析。`release/jetson_bundle_final/` 的 91 项 SHA256 全量通过。证据见 `runs/M_final/`。服务器图片界面和 Jetson Orin Nano 8GB 实测待完成。
+最终 M 的 500 条训练样本通过校验并完成 50 步。代表性样本复核了合并前后和重新加载的文本一致性。L40 用最终导出的 Q4_K_M 和 Q8_0 各运行 100 条训练照片清单，输出全部可解析。`release/jetson_bundle_final/` 的 91 项 SHA256 全量通过。证据见 `runs/M_final/`。
+
+最终 Q4_K_M 的 Gradio 图片模式已在 L40 验证，四条请求均可解析。真实齐全图 `v001` 多判线缆 unknown，清晰对照 `v040` 判齐全。缺万用表 `v014` 判缺失，手部遮挡 `v041` 判无法确认并多报线缆 unknown。记录见 `runs/M_final/demo/image_mode_check.json`。双语报告、演示脚本和答辩提纲已交付。Jetson Orin Nano 8GB 的实机、摄像头、性能数据及录像仍待完成。
 
 以下保留了 2026-11-16 的开发验证记录，冒烟指标仅用于复核链路。正式实验的真实数据结果见 `STATUS.md` 和 `EXPERIMENTS.md`。
 
