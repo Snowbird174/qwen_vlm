@@ -15,6 +15,7 @@
 | 原模型真实基线 | 512² 已评测 100 条 checklist，决策准确率 80/100，误报齐全 7/31，unknown 召回 2/18。见 `runs/B0_s001/eval/` |
 | 正式三折 | B1、M、A1–A4 的 18/18 折已核对，每种方法 100 条折外预测。训练产物 `runs/cv3_folds/`，运行日志 `runs/logs/cv3_main.log` |
 | 对比与模型选择 | 六种 LoRA 方法均为 2/31 误报齐全，按预定规则保留 M。详见 `runs/comparison/` 和 `EXPERIMENTS.md` |
+| 鲁棒性 | 27/27 组已验收。M 在 `clean`、重度暗光、重度模糊分别判对 87/100、79/100、78/100。产物 `runs/robust/`，恢复命令见 `docs/NEXT_STEPS.md` |
 
 当前里程碑见 `STATUS.md`，运行命令和恢复位置见 `docs/NEXT_STEPS.md`。接手时先核对运行目录下的 manifest 和日志。
 

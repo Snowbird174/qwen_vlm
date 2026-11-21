@@ -1,6 +1,6 @@
 # 就绪报告
 
-2026-11-21 已核对正式三折的 18 份 50 步 manifest 和 B1、M、A1–A4 各 100 条真实折外预测。训练峰值显存分配为 5.396–5.411 GiB（L40）。九档模拟干扰各有 100 条校验通过的样本和 B0 预测。恢复记录在 `runs/logs/cv3_recovery.log` 和 `runs/logs/robust_B0_recovery.log`。B1/M 鲁棒性推理、最终导出与 Jetson Orin Nano 8GB 实测均待完成。
+2026-11-21 已核对正式三折的 18 份 50 步 manifest 和 B1、M、A1–A4 各 100 条真实折外预测。训练峰值显存分配为 5.396–5.411 GiB（L40）。鲁棒性九档各校验 0 错误，B0、B1、M 共 2700 条预测成功解析。M 在重度暗光和模糊分别少判对 8、9 条。恢复命令见 `docs/NEXT_STEPS.md`。最终导出与 Jetson Orin Nano 8GB 实测待完成。
 
 2026-11-20 更新。50 张真实照片均已标注，含 9 个摆放组和 100 条 checklist。L40 上已完成 B0 三档分辨率和三档量化评测，见 `runs/comparison/`。器材框增强和固定三折划分已用全部数据生成和校验，见 `data/splits/cv3/`。正式训练和板端实测的进度见 `STATUS.md` 与 `docs/NEXT_STEPS.md`。
 

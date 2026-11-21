@@ -20,3 +20,8 @@ runs/**/adapter/
 runs/**/logs/*.log
 *.gguf
 data/aug/
+
+# Real-photo perturbations and in-progress inference segments.
+data/robust/
+runs/robust/.work/
+runs/robust/.lock

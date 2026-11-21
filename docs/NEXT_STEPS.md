@@ -4,7 +4,7 @@
 
 ## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-任务 A、B、C 的数据与工具已完成。2026-11-21 第 1 步正式三折全部完成，18 折 manifest 和 6 份各含 100 条真实折外预测的汇总均已核对。B0 九档鲁棒性推理已并行完成，结果暂存在 `work/coursework/robust_runs/robust/`。
+任务 A、B、C 的数据与工具已完成。2026-11-21 完成了正式三折、对比复核和 27 组鲁棒性评测，按规则保留 M。接下来执行第 4 步。
 
 **用户手头暂时没有 Jetson，本轮只做云端能做的事**（第 1–5 步），板端第 6 步暂缓。课程要求与证据的对应关系见 `docs/coursework_requirements.md`。第 3、5 步是为了补上课程要求里的缺口：鲁棒性评估、技术报告、演示和答辩材料。
 
@@ -51,7 +51,15 @@ $P scripts/eval_compare.py --runs-root runs --out runs/comparison
 
 ### 第 3 步：鲁棒性实验（课程要求 (4) “robustness under different conditions”）
 
-2026-11-21 已在忽略目录生成并审查九档，逐档校验 0 错误。B0 九档各 100 条预测和指标已核对，暂存 `work/coursework/robust_runs/robust/`。恢复命令及待复用的代码和数据位置见 `runs/logs/robust_B0_recovery.log`。
+**已完成。** 已生成 450 张 JPEG 和 900 条评测样本，九档校验均为 0 错误。B0、B1、M 共 27 组各 100 条预测全部成功解析，B1 和 M 的预测与各自的折外 adapter 校验一致。B0 推理与训练并行约 25 分钟，B1 与 M 串行折外推理共 67 分钟。M 在 `clean`、重度暗光、重度模糊的决策准确率分别为 87/100、79/100、78/100。对比表、真实条件子集及目视审核图见 `EXPERIMENTS.md`，完整生成清单见 `runs/robust/dataset_manifest.json`。
+
+复现数据用 `$P scripts/data_make_robust.py --seed 0`。加载 `env/activate.sh` 后执行下列命令可恢复 B1 与 M，已验证的预测将复用。B0 使用 `--models B0`。
+
+```bash
+P=envs/qwen_vlm/bin/python
+nohup $P -Bu scripts/run_robust.py --models B1 M >> runs/logs/robust_cv3.log 2>&1 < /dev/null &
+printf '%s\n' "$!" > runs/logs/robust_cv3.pid.log
+```
 
 真实数据里只有遮挡（10 条）和有手（6 条）两种条件，没有光照变化，用户也不再拍新照片。因此对真实测试照片做人工干扰，只做推理、不训练，比较各模型在干扰加重时掉多少。报告里必须写明这是模拟干扰，不是真实拍摄。
 
