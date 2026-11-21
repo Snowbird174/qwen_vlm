@@ -16,12 +16,12 @@
 | (1) "Understand and explain the model architecture, key algorithms, and underlying principles" | 视觉编码器、DeepStack、视觉与语言融合、chat template、LoRA | `docs/model_principles.md`，技术报告 |
 | (1) "Implement meaningful improvements or extensions ... model adaptation ..." | 用成对场景、困难负样本和 unknown 监督做领域 LoRA 微调，并加一个存在性辅助任务 | `src/qwen_vlm/training/`，`configs/train/` |
 | (1) "You can build your own dataset to train"（可选） | 自建实验室数据集 | `docs/data_collection.md`，`data/`，data card |
-| (1) "Evaluate the effectiveness of the proposed improvements through comparative experiments" | B0 / B1 / M 以及消融 A1-A3 | `EXPERIMENTS.md`，`runs/`，`reports/` |
+| (1) "Evaluate the effectiveness of the proposed improvements through comparative experiments" | B0 / B1 / M 以及消融 A1–A4，按摆放组三折交叉验证 | `EXPERIMENTS.md`，`runs/`，`reports/` |
 | (2) "Deploy the selected model or its core vision inference component on Jetson Nano and demonstrate image or video" | 在 Orin Nano 8GB 上用 llama.cpp 运行完整 VLM，接摄像头演示 | `deploy/jetson/`，`runs/jetson/` |
 | (2) "encouraged to apply Jetson Nano into a real device, real sensor ..." | 固定俯视 USB/CSI 摄像头 | 演示脚本，视频 |
 | (3) "Implement at least two optimization techniques ... quantization ... input resolution adjustment" | 量化（F16/Q8_0/Q4_K_M）和输入像素预算（384²/512²/768²） | `configs/quant/`，优化矩阵结果 |
 | (3) "Compare the optimized system with the original baseline using quantitative experimental results" | 在同一设备、受控变量下对比 | `reports/` 中的结果表 |
-| (4) "Evaluate task accuracy, inference speed, latency, resource consumption, and robustness under different conditions" | 指标见 `contracts/metrics.md`；按条件（光照、遮挡）分开报告 | `src/qwen_vlm/evaluation/`，板端日志 |
+| (4) "Evaluate task accuracy, inference speed, latency, resource consumption, and robustness under different conditions" | 指标见 `contracts/metrics.md`；真实条件（遮挡、有手）分开报告，光照、模糊、噪声用对真实照片的模拟干扰测试（`docs/NEXT_STEPS.md` 第 3 步）；速度和资源以板端日志为准 | `src/qwen_vlm/evaluation/`，`runs/robust/`，板端日志 |
 | (4) "Analyze system limitations and propose improvements" | 失败案例和局限章节 | 技术报告 |
 
 ## 3. Deliverables

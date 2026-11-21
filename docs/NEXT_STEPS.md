@@ -4,9 +4,11 @@
 
 ## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-当前进度：任务 A、B、C 已完成并提交（最新提交 `71cdd79`，工作区干净）。**正式三折训练一次都还没跑**，`runs/comparison/comparison.md` 里除 B0 外全是“待测”。L40 空闲；项目盘 `/root/gpufree-data` 剩约 9.2 GiB，`/tmp` 剩约 17 GiB。
+当前进度：任务 A、B、C 已完成并提交，工作区干净。**正式三折训练一次都还没跑**，`runs/comparison/comparison.md` 里除 B0 外全是“待测”。L40 空闲；项目盘 `/root/gpufree-data` 剩约 9.2 GiB，`/tmp` 剩约 17 GiB。
 
-按下面四步顺序做。每步做完跑 `pytest -q tests` 并单独 `git commit`。
+**用户手头暂时没有 Jetson，本轮只做云端能做的事**（第 1–5 步），板端第 6 步暂缓。课程要求与证据的对应关系见 `docs/coursework_requirements.md`。第 3、5 步是为了补上课程要求里的缺口：鲁棒性评估、技术报告、演示和答辩材料。
+
+按顺序做。每步做完跑 `pytest -q tests` 并单独 `git commit`。第 3 步中 B0 的部分不依赖训练结果，显存也够（训练约占 5.5 GiB），可以和第 1 步同时跑。
 
 ### 第 1 步：跑正式三折对比（任务 C 第 3 点）
 
@@ -41,7 +43,20 @@ $P scripts/eval_compare.py --runs-root runs --out runs/comparison
 
 只有 9 个摆放组，置信区间一律标“样本不足”；差距落在区间内时写“差异不显著”，不要写成“提升”。必须披露的局限见任务 D 第 3 点。
 
-### 第 3 步：训练最终模型并导出（任务 E 第 1–3 点）
+### 第 3 步：鲁棒性实验（课程要求 (4) “robustness under different conditions”）
+
+真实数据里只有遮挡（10 条）和有手（6 条）两种条件，没有光照变化，用户也不再拍新照片。因此对真实测试照片做人工干扰，只做推理、不训练，比较各模型在干扰加重时掉多少。报告里必须写明这是模拟干扰，不是真实拍摄。
+
+1. **生成干扰图**：新增 `scripts/data_make_robust.py`（实现放在 `src/qwen_vlm/data/robust.py`，单测 `tests/test_data_robust.py`）。输入 `real_v1.jsonl`，固定随机种子，输出到 `data/robust/v1/`，并把 `data/robust/` 加进 `.gitignore`。
+   - 条件：暗（亮度 ×0.5、×0.3）、过曝（×1.5、×2.0，截断到 255）、高斯模糊（σ=2、4）、高斯噪声（σ=15、30），共 8 档。另加一档 `clean`：不做干扰、只走同一保存流程，作为对照，避免把 PNG 转 JPEG 的影响算到干扰头上。
+   - 图片保持原分辨率，存为 JPEG（q=95）。每档单独一个 `samples.jsonl`，标签不变，`session_id`、`scene_group_id` 不变。`condition_tags` 追加如 `robust_dark_l1`。sample_id 和 `pair_group_id` 加上档位后缀，命名规则参照 `augment.py`（编号里不能有下划线）。
+   - 先拼缩略图抽查：最重的档里人眼应仍能看清器材，否则“标签不变”不成立，需减轻该档。每档都要过 `scripts/data_validate.py`，结果 0 错误。
+2. **跑预测**：新增 `scripts/run_robust.py`。B0 不加 adapter，按 512² 跑全部 9 档。B1 和 M 必须**折外**预测：每张图用它所在测试折的 adapter（`runs/cv3_folds/<ID>_fold<k>/adapter`，分组见 `FIXED_CV3_TEST_GROUPS`），三折结果拼成 100 条后，再用 `eval_predictions.py` 评测。输出到 `runs/robust/<ID>_<条件>/`。每个模型 900 条预测，预计 20–30 分钟，三个模型约 1.5 小时（估算）。
+3. **出表**：B0、B1、M 在每档上的决策准确率、误报齐全率、unknown 召回，以及相对 `clean` 下降了多少。真实条件（遮挡、有手）的结果从第 2 步各 `metrics.json` 的 `by_condition` 中读取，放在同一章并单独标为“真实条件”。
+
+验收：9 档 × 3 个模型都有 100 条预测和 `eval/metrics.json`；单测通过；表和抽查缩略图写入 `EXPERIMENTS.md`。
+
+### 第 4 步：训练最终模型并导出（任务 E 第 1–3 点）
 
 **选模型规则（看结果前定好，不要事后改）**：默认部署 M。只有当另一种方法的误报齐全率比 M 低、且决策准确率不比 M 差时，才停下来把对比交给用户决定是否换。不在测试集上再调任何参数。
 
@@ -65,11 +80,40 @@ rm -rf /tmp/qwen_vlm_export/merged
 - 每一步开始前用 `df -h /tmp /root/gpufree-data` 复查空间。打包脚本检查项目盘剩余至少 5 GiB，并用硬链接引用模型，所以 bundle 必须和 GGUF 放在同一文件系统（`/tmp`）。
 - 可以用 `scripts/predict_llamacpp.py` 让最终模型的 Q4_K_M 和 Q8_0 在真实 100 条上跑一遍，确认导出没坏。最终模型训练时见过这些图，这组数只能当导出检查，**不能当泛化指标写进报告**；泛化指标只用第 2 步的折外结果。
 
-验收：`runs/M_final/merge_check.json` 显示合并前后输出一致；bundle 内有 `final-q4_k_m.gguf` 和 `mmproj-final-f16.gguf`；临时合并权重已删除。
+- 交付物要求“源码、模型文件、部署说明”齐全：把 `runs/M_final/adapter/` 和 `merge_check.json` 复制进 bundle（例如 `models/adapter/`），再按脚本已有的 `SHA256SUMS` 格式重新计算校验和。
+- 各量化档的 GGUF 文件大小与设备无关，可以直接写进报告的资源部分。L40 上测到的延迟和显存**不能**当作 Jetson 的数字。
 
-### 第 4 步：交给用户在 Jetson 上实测（任务 E 第 4 点）
+验收：`runs/M_final/merge_check.json` 显示合并前后输出一致；bundle 内有 `final-q4_k_m.gguf`、`mmproj-final-f16.gguf`、adapter 和更新后的 `SHA256SUMS`；临时合并权重已删除。
 
-这一步要用户在板子上操作，接手模型做不了。把 bundle 的位置和 `deploy/jetson/README.md` 中的步骤告诉用户：依次运行 `00`–`04`，其中 `02`–`04` 加 `MODEL_TAG=final`，跑完把日志传回 `runs/jetson/`。日志回来之前，板端延迟、内存等结果一律写“待测”。
+### 第 5 步：技术报告初稿、演示与答辩材料（课程 Deliverables）
+
+1. **技术报告** `reports/technical_report.md`。动笔前先问用户报告语言和格式（课程原文未规定）。章节按课程要求排：
+   - 系统设计（任务、器材清单、整体流程）；
+   - 模型原理（在 `docs/model_principles.md` 基础上补全）；
+   - 改进方法（LoRA、成对辅助、困难负样本、unknown 监督、框引导合成数据）；
+   - 数据集（data card，模板 `docs/data_card_template.md`）；
+   - 部署（llama.cpp、GGUF、Jetson 脚本）；
+   - 优化（量化、分辨率）；
+   - 实验评估（对比、消融、鲁棒性、速度与资源）；
+   - 局限与改进；
+   - 结论。
+   
+   实验章参照 `reports/templates/`。数字只从 `runs/` 的 `metrics.json` 取。板端章节和板端数字全部写“待测（等待 Jetson 实测）”，不要用服务器数字顶替。
+2. **服务器上验证演示程序**：用最终模型的 Q4_K_M 在服务器上以图片模式启动 `src/qwen_vlm/app/app.py`，跑三类典型样例：器材齐全、有线缆但没万用表、遮挡。截图放进报告，作为板端演示前的备份证据。
+3. **演示视频脚本** `reports/demo_script.md`：逐个镜头写清楚。板子和摄像头的整体布置；齐全场景；拿走万用表但留下线缆；手遮住器材时模型回答 unknown；画面上显示延迟。拍摄要等板子到手。
+4. **答辩提纲** `reports/defense_outline.md`：用 5 分钟讲清问题、方法、结果。列出可能被问到的问题和答案，例如：为什么选 VLM 而不是 YOLO、为什么用 Orin Nano、数据只有 50 张怎么保证结论可信、合成图会不会造成泄漏、量化带来的精度和速度取舍。
+
+验收：报告初稿各章齐全，没有编造的数字；三份文件提交；`STATUS.md` 的 P6 行更新。
+
+### 第 6 步（暂缓）：Jetson 实测
+
+用户暂时没有 Jetson，接手模型不要做这一步，也不要用服务器数据代替。板子到手后，由用户按 `deploy/jetson/README.md` 操作：
+
+1. 先用已打好的 `release/jetson_bundle_base/` 跑 `00`–`03`，测原模型在板上的 3 种量化 × 3 种分辨率（`03_bench.sh` 默认就扫这 9 种组合，并记录 `tegrastats`）。
+2. 再用 `/tmp/qwen_vlm_export/bundle_final` 加上 `MODEL_TAG=final` 跑 `02`–`04`，`04` 用摄像头做演示并录视频。
+3. 日志传回 `runs/jetson/`，再补全报告的板端章节（延迟、内存、功耗、优化前后对比）。
+
+另外请用户向老师确认：课程原文写的是 “Jetson Nano”，本项目用的是 Jetson Orin Nano 8GB，是否接受；同时问清截止时间和报告格式。
 
 ## 0. 当前状态（已完成，不要重做）
 
