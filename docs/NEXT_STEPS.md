@@ -34,6 +34,8 @@ printf '%s\n' "$!" > runs/logs/cv3_main.pid.log
 
 ### 第 2 步：汇总对比表并写结论（任务 D）
 
+**已完成。** 12 组运行重新出表，三折方法列全部有实测值。6 种 LoRA 方法的误报齐全率均为 2/31，B0 为 7/31。M 决策准确率 86/100、unknown 召回 1/18。没有方法满足严格更低的误报齐全率，按预定规则保留 M。逐样本结果与成对区间见 `runs/comparison/cv_case_review.txt`，结论见 `EXPERIMENTS.md`。
+
 ```bash
 $P scripts/eval_compare.py --runs-root runs --out runs/comparison
 ```
@@ -135,7 +137,7 @@ scripts/make_jetson_bundle.sh artifacts/quantized/final release/jetson_bundle_fi
   - 器材框（已人工复核，可当真值）：`data/annotations/annotations.json`，格式见 `data/annotations/README.md`（`cable` = `cable_bundle`，坐标 xyxy 像素）。
   - 摆放分组（按框位置确定，跨组无近重复）：第 1–6 张 l001–l006 各一组，7–8 张 l007，9–25 张 l008，26–50 张 l009。
 - B0（原模型，Transformers bf16，512²）已在全部 50 张上评测：`runs/B0_s001/eval/metrics.md`。
-  决策准确率 80/100，**误报齐全率 7/31**，unknown 召回 2/18。典型错误：桌上有红黑线缆但没有万用表时判"万用表在"（第 14、22、27、32 张）；螺丝刀常被判 unknown（14 张）；遮挡时不说 unknown。
+  决策准确率 80/100，**误报齐全率 7/31**，unknown 召回 2/18。典型错误包括第 14、22、27、32 张的万用表误判，18 张照片的 23 条明确螺丝刀状态被判 unknown，以及真实遮挡子集的 unknown 召回 0/14。
 
 ## 1. 已定的方案（用户已确认）
 

@@ -1,0 +1,30 @@
+B0: {'decision_accuracy': '80/100', 'false_complete_rate': '7/31', 'unknown_recall': '2/18'}
+B1: {'decision_accuracy': '87/100', 'false_complete_rate': '2/31', 'unknown_recall': '0/18'}
+M: {'decision_accuracy': '86/100', 'false_complete_rate': '2/31', 'unknown_recall': '1/18'}
+A1: {'decision_accuracy': '88/100', 'false_complete_rate': '2/31', 'unknown_recall': '1/18'}
+A2: {'decision_accuracy': '87/100', 'false_complete_rate': '2/31', 'unknown_recall': '2/18'}
+A3: {'decision_accuracy': '91/100', 'false_complete_rate': '2/31', 'unknown_recall': '0/18'}
+A4: {'decision_accuracy': '87/100', 'false_complete_rate': '2/31', 'unknown_recall': '0/18'}
+selection pause candidates: []
+B1 - B0: {'decision_accuracy': (0.07, -0.0205, 0.2164), 'false_complete_rate': (-0.1613, -0.1765, -0.1429), 'unknown_recall': (-0.1111, -0.1111, -0.1111)}
+M - B0: {'decision_accuracy': (0.06, -0.0402, 0.2164), 'false_complete_rate': (-0.1613, -0.1765, -0.1429), 'unknown_recall': (-0.0556, -0.0556, -0.0556)}
+M - A4: {'decision_accuracy': (-0.01, -0.0259, 0.0), 'false_complete_rate': (0.0, 0.0, 0.0), 'unknown_recall': (0.0556, 0.0556, 0.0556)}
+M - A1: {'decision_accuracy': (-0.02, -0.0517, 0.0), 'false_complete_rate': (0.0, 0.0, 0.0), 'unknown_recall': (0.0, 0.0, 0.0)}
+M - A2: {'decision_accuracy': (-0.01, -0.0259, 0.0), 'false_complete_rate': (0.0, 0.0, 0.0), 'unknown_recall': (-0.0556, -0.0556, -0.0556)}
+M - A3: {'decision_accuracy': (-0.05, -0.25, -0.0122), 'false_complete_rate': (0.0, 0.0, 0.0), 'unknown_recall': (0.0556, 0.0556, 0.0556)}
+s001_l008_v014_q01 true meter absent required True prediction {'B0': 'present', 'B1': 'unknown', 'M': 'absent', 'A1': 'absent', 'A2': 'unknown', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': True, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l008_v014_q02 true meter absent required False prediction {'B0': 'absent', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'unknown', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': False, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l008_v022_q01 true meter absent required True prediction {'B0': 'present', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'absent', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': True, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l008_v022_q02 true meter absent required False prediction {'B0': 'absent', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'absent', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': False, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l009_v027_q01 true meter absent required False prediction {'B0': 'present', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'absent', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': False, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l009_v027_q02 true meter absent required True prediction {'B0': 'present', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'absent', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': True, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l009_v032_q01 true meter absent required True prediction {'B0': 'present', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'absent', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': True, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+s001_l009_v032_q02 true meter absent required False prediction {'B0': 'present', 'B1': 'absent', 'M': 'absent', 'A1': 'absent', 'A2': 'absent', 'A3': 'absent', 'A4': 'absent'} false complete {'B0': False, 'B1': False, 'M': False, 'A1': False, 'A2': False, 'A3': False, 'A4': False}
+screwdriver unknown predictions on known cases / on all cases, occluded unknown labels recovered / all true unknown in occlusion:
+B0 23/25 0/14
+B1 1/1 0/14
+M 4/4 1/14
+A1 1/1 1/14
+A2 1/1 2/14
+A3 0/0 0/14
+A4 5/5 0/14
