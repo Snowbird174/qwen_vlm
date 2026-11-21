@@ -1,13 +1,75 @@
 # 下一步执行计划（交给接手的模型/同学）
 
-更新：2026-11-20。项目概况和接手规则见 `HANDOFF.md`。本文件记录实验计划、已验证的产物和恢复命令。
+更新：2026-11-21。项目概况和接手规则见 `HANDOFF.md`。本文件记录实验计划、已验证的产物和恢复命令。
 
-## 本轮推进顺序
+## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-1. 主代理在 L40 上串行跑任务 A。DeepSeek Flash 子代理（`max` 推理级别）并行实现任务 B 的成对图生成和任务 C 的固定划分。
-2. 生成合成图并核查编辑效果后，主代理复验三折的图片、摆放组、pair 和样本覆盖。用真实折外预测统一评测 B1、M、A1–A4。
-3. 对比表、真实指标和恢复命令随里程碑写回 `STATUS.md`、本文件和 `reports/readiness.md`，运行记录保存在 `runs/`。
-4. 全量部署模型走任务 E。板端与服务器分别记载运行证据，等 Jetson 脚本的实际日志回传后补齐板端结果。
+当前进度：任务 A、B、C 已完成并提交（最新提交 `71cdd79`，工作区干净）。**正式三折训练一次都还没跑**，`runs/comparison/comparison.md` 里除 B0 外全是“待测”。L40 空闲；项目盘 `/root/gpufree-data` 剩约 9.2 GiB，`/tmp` 剩约 17 GiB。
+
+按下面四步顺序做。每步做完跑 `pytest -q tests` 并单独 `git commit`。
+
+### 第 1 步：跑正式三折对比（任务 C 第 3 点）
+
+```bash
+cd /root/gpufree-data/qwen_vlm && source env/activate.sh
+P=envs/qwen_vlm/bin/python
+mkdir -p runs/logs
+nohup $P scripts/run_cv.py --max-steps 50 > runs/logs/cv3_main.log 2>&1 &
+```
+
+- 共 6 种方法 × 3 折 = 18 次训练加预测，脚本串行执行。M 的 30 步试跑用了约 3.3 分钟，据此估计每次 50 步训练加预测约 6–8 分钟，整轮约 2–3 小时。这是估算，以日志为准。
+- 中断后用原命令重跑，已完成的 adapter 和预测会复用。不要改步数、配置或划分；必须改时换新的 `--runs-root`，不要覆盖旧结果。
+- 每折结束后脚本会删 `checkpoints/`，只留 `adapter/`。磁盘紧张时可删 `work/cv3_pilot/*/checkpoints`（约 400 MB，试跑的残留）。
+
+验收：
+
+- `runs/{B1,M,A1,A2,A3,A4}_cv3/predictions.jsonl` 各 100 行，sample_id 与 `data/annotations/real_v1.jsonl` 一一对应，且都有 `eval/metrics.json`。
+- 每个 `runs/cv3_folds/<ID>_fold<k>/run_manifest.json` 中 `steps_completed` 为 50，`error` 为空。
+
+### 第 2 步：汇总对比表并写结论（任务 D）
+
+```bash
+$P scripts/eval_compare.py --runs-root runs --out runs/comparison
+```
+
+对比表中 B1、M、A1–A4 列应全部有数。然后在 `STATUS.md`、`EXPERIMENTS.md`、`reports/readiness.md` 中用大白话回答下面四个问题，只写实测数字：
+
+1. 微调有没有用：B1、M 相比 B0 的误报齐全率（B0 为 7/31）和决策准确率（B0 为 80/100）。
+2. 合成图有没有用：比较 M 和 A4（mix 相同，A4 不加合成图）。
+3. 各组件的贡献：M 对比 A1（去掉成对辅助）、A2（去掉困难负样本加权）、A3（去掉 unknown 样本）。
+4. B0 的老毛病改了没有：逐张对照 `predictions.jsonl`，检查第 14、22、27、32 张“有线缆没万用表却判万用表在”、螺丝刀被判 unknown、遮挡时不说 unknown 这三类错误。
+
+只有 9 个摆放组，置信区间一律标“样本不足”；差距落在区间内时写“差异不显著”，不要写成“提升”。必须披露的局限见任务 D 第 3 点。
+
+### 第 3 步：训练最终模型并导出（任务 E 第 1–3 点）
+
+**选模型规则（看结果前定好，不要事后改）**：默认部署 M。只有当另一种方法的误报齐全率比 M 低、且决策准确率不比 M 差时，才停下来把对比交给用户决定是否换。不在测试集上再调任何参数。
+
+```bash
+# 全量训练数据：100 条真实 + 400 条合成，已验证 0 错误
+cat data/annotations/real_v1.jsonl data/aug/v1/samples.jsonl > data/splits/full_v1.jsonl
+$P scripts/data_validate.py data/splits/full_v1.jsonl
+$P scripts/train.py --config configs/train/M.yaml --train-jsonl data/splits/full_v1.jsonl \
+   --no-validation --max-steps 50 --output-dir runs/M_final
+rm -rf runs/M_final/checkpoints
+
+# 合并与导出放在 /tmp（项目盘放不下合并权重加 GGUF）
+$P scripts/merge_lora.py --adapter runs/M_final/adapter --sample-jsonl data/annotations/real_v1.jsonl \
+   --merged-dir /tmp/qwen_vlm_export/merged --merge-check runs/M_final/merge_check.json
+$P scripts/export_gguf.py /tmp/qwen_vlm_export/merged /tmp/qwen_vlm_export/gguf final
+scripts/make_jetson_bundle.sh /tmp/qwen_vlm_export/gguf /tmp/qwen_vlm_export/bundle_final
+rm -rf /tmp/qwen_vlm_export/merged
+```
+
+- 文件名必须带 `final` 标签（生成 `final-q4_k_m.gguf`、`mmproj-final-f16.gguf`），Jetson 脚本靠 `MODEL_TAG=final` 找模型。
+- 每一步开始前用 `df -h /tmp /root/gpufree-data` 复查空间。打包脚本检查项目盘剩余至少 5 GiB，并用硬链接引用模型，所以 bundle 必须和 GGUF 放在同一文件系统（`/tmp`）。
+- 可以用 `scripts/predict_llamacpp.py` 让最终模型的 Q4_K_M 和 Q8_0 在真实 100 条上跑一遍，确认导出没坏。最终模型训练时见过这些图，这组数只能当导出检查，**不能当泛化指标写进报告**；泛化指标只用第 2 步的折外结果。
+
+验收：`runs/M_final/merge_check.json` 显示合并前后输出一致；bundle 内有 `final-q4_k_m.gguf` 和 `mmproj-final-f16.gguf`；临时合并权重已删除。
+
+### 第 4 步：交给用户在 Jetson 上实测（任务 E 第 4 点）
+
+这一步要用户在板子上操作，接手模型做不了。把 bundle 的位置和 `deploy/jetson/README.md` 中的步骤告诉用户：依次运行 `00`–`04`，其中 `02`–`04` 加 `MODEL_TAG=final`，跑完把日志传回 `runs/jetson/`。日志回来之前，板端延迟、内存等结果一律写“待测”。
 
 ## 0. 当前状态（已完成，不要重做）
 
@@ -120,4 +182,4 @@ $P scripts/data_validate.py data/aug/v1/samples.jsonl
 - 不改 `contracts/`、`src/qwen_vlm/common/`、`src/qwen_vlm/inference/base.py`。
 - 不编造结果；未跑的写"待测"。合成/冒烟数字不进报告。
 - 每完成一个任务跑 `pytest -q tests` 并 `git commit`；推送需用户输入 GitHub 令牌（见 `docs/git_workflow.md`）。服务器外网慢，代理常断，直连 GitHub 可用。
-- 标注工具可能仍在 7861 端口运行，不影响训练。
+- 标注已全部完成，标注工具已关闭，不需要再启动。
