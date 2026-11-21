@@ -1,8 +1,10 @@
 # 就绪报告
 
+2026-11-21 已核对正式三折的 18 份 50 步 manifest 和 B1、M、A1–A4 各 100 条真实折外预测。训练峰值显存分配为 5.396–5.411 GiB（L40）。九档模拟干扰各有 100 条校验通过的样本和 B0 预测。恢复记录在 `runs/logs/cv3_recovery.log` 和 `runs/logs/robust_B0_recovery.log`。B1/M 鲁棒性推理、最终导出与 Jetson Orin Nano 8GB 实测均待完成。
+
 2026-11-20 更新。50 张真实照片均已标注，含 9 个摆放组和 100 条 checklist。L40 上已完成 B0 三档分辨率和三档量化评测，见 `runs/comparison/`。器材框增强和固定三折划分已用全部数据生成和校验，见 `data/splits/cv3/`。正式训练和板端实测的进度见 `STATUS.md` 与 `docs/NEXT_STEPS.md`。
 
-日期：2026-11-16。分三类：**已验证**（有实际运行的日志或产物）、**已准备但未验证**、**等待用户材料**。本报告中的数字都来自合成数据或服务器冒烟，**不是实验结果**，不得写进结果表。
+以下保留了 2026-11-16 的开发验证记录，冒烟指标仅用于复核链路。正式实验的真实数据结果见 `STATUS.md` 和 `EXPERIMENTS.md`。
 
 ## 1. 已验证
 
@@ -29,7 +31,6 @@
 
 | 项目 | 位置 | 缺什么才能验证 |
 | --- | --- | --- |
-| 正式训练 B1/M/A1–A4 | `configs/train/*.yaml`，`scripts/run_cv.py` | 根据训练损失设定统一步数。`base.yaml` 默认步数是占位值 |
 | Jetson 构建与运行 | `deploy/jetson/00`–`04`，`release/jetson_bundle_base/`（1.9G，Q4_K_M + mmproj） | 用户在板上运行并传回日志 |
 | 板端量化/分辨率基准 | `deploy/jetson/03_bench.sh` | 同上；包里只有 Q4，测 Q8/F16 需把对应 GGUF 拷到板上 `models/` |
 | 摄像头演示 | `src/qwen_vlm/app/app.py`，`04_app.sh` | 服务器没有摄像头，只能在板上测 |

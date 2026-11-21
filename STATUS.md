@@ -1,6 +1,6 @@
 # 项目状态
 
-更新：2026-11-20。真实实验的输出与恢复命令见 `docs/NEXT_STEPS.md`。
+更新于 2026-11-21。正式三折已完成，恢复命令见 [本轮计划](docs/NEXT_STEPS.md)。
 
 | 阶段 | 内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
@@ -14,7 +14,8 @@
 | P3 | B0 真实评测 | 已验证 | `runs/B0_s001/eval/` |
 | P3 | B0 服务器分辨率和量化扫描 | 已验证 | L40 上 BF16 三档、GGUF 三档，`runs/comparison/` |
 | P3 | LoRA 训练与固定三折入口，B1/M/A1–A4 配置 | B1、M 的真实训练子集试跑已通过 | `scripts/run_cv.py`，`work/cv3_pilot/` |
-| P3 | 正式训练与消融 | 待测 | `EXPERIMENTS.md` |
+| P3 | 正式训练与消融 | 18/18 折已复核 | 每折 50 步，B1、M、A1–A4 各 100 条真实折外预测。详见 `runs/cv3_folds/`、`runs/*_cv3/eval/` |
+| P3 | 鲁棒性条件 | 九档数据校验及 B0 九档预测已完成，B1/M 待测 | `work/coursework/robust_runs/robust/`，`runs/logs/robust_B0_recovery.log` |
 | P3 | 评测代码（全部任务指标、bootstrap、出表） | 已验证（手算单测） | `src/qwen_vlm/evaluation/`，`tests/test_metrics.py` |
 | P4 | 量化与像素档的板端实测 | 等待用户 | `deploy/jetson/03_bench.sh` |
 | P5 | 摄像头演示 | 已准备未验证 | 服务器上图片模式已跑通；摄像头只能在板上测 |

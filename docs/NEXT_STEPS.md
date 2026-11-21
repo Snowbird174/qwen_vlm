@@ -4,7 +4,7 @@
 
 ## 本轮要做的事（2026-11-21 交接，先读这一节）
 
-当前进度：任务 A、B、C 已完成并提交，工作区干净。**正式三折训练一次都还没跑**，`runs/comparison/comparison.md` 里除 B0 外全是“待测”。L40 空闲；项目盘 `/root/gpufree-data` 已扩容到 99 GiB，剩约 59 GiB，空间不再是瓶颈。
+任务 A、B、C 的数据与工具已完成。2026-11-21 第 1 步正式三折全部完成，18 折 manifest 和 6 份各含 100 条真实折外预测的汇总均已核对。B0 九档鲁棒性推理已并行完成，结果暂存在 `work/coursework/robust_runs/robust/`。
 
 **用户手头暂时没有 Jetson，本轮只做云端能做的事**（第 1–5 步），板端第 6 步暂缓。课程要求与证据的对应关系见 `docs/coursework_requirements.md`。第 3、5 步是为了补上课程要求里的缺口：鲁棒性评估、技术报告、演示和答辩材料。
 
@@ -12,15 +12,19 @@
 
 ### 第 1 步：跑正式三折对比（任务 C 第 3 点）
 
+**已完成。** 正式任务从 15:24 至 17:30，耗时约 2 小时 6 分钟。18 折各完成 50 步，adapter 均可用于推理，600 条汇总预测全部解析成功。每折测试集为 50、34、16 条，按同一金标准顺序合并。训练峰值分配为 5.396–5.411 GiB，峰值保留为 5.566–5.662 GiB，设备为服务器 L40。训练、数据和冻结接口均与 `a9a088f` 一致。manifest 的 `dirty` 标记包含运行产物与进度文档。全量测试 111 通过，复核日志见 `runs/logs/cv3_audit.log`。
+
 ```bash
 cd /root/gpufree-data/qwen_vlm && source env/activate.sh
 P=envs/qwen_vlm/bin/python
 mkdir -p runs/logs
-nohup $P scripts/run_cv.py --max-steps 50 > runs/logs/cv3_main.log 2>&1 &
+nohup $P -u scripts/run_cv.py --max-steps 50 >> runs/logs/cv3_main.log 2>&1 < /dev/null &
+printf '%s\n' "$!" > runs/logs/cv3_main.pid.log
 ```
 
 - 共 6 种方法 × 3 折 = 18 次训练加预测，脚本串行执行。M 的 30 步试跑用了约 3.3 分钟，据此估计每次 50 步训练加预测约 6–8 分钟，整轮约 2–3 小时。这是估算，以日志为准。
 - 中断后用原命令重跑，已完成的 adapter 和预测会复用。不要改步数、配置或划分；必须改时换新的 `--runs-root`，不要覆盖旧结果。
+- 从短生命周期的命令执行工具启动时，后台子进程曾随 shell 退出。工具会话内启动后追加 `wait "$(cat runs/logs/cv3_main.pid.log)"`，保留 `nohup` 和持续会话。先核对是否已有进程，恢复记录见 `runs/logs/cv3_recovery.log`。
 - 每折结束后脚本会自动删除 `checkpoints/`，只留 `adapter/`。
 
 验收：
@@ -44,6 +48,8 @@ $P scripts/eval_compare.py --runs-root runs --out runs/comparison
 只有 9 个摆放组，置信区间一律标“样本不足”；差距落在区间内时写“差异不显著”，不要写成“提升”。必须披露的局限见任务 D 第 3 点。
 
 ### 第 3 步：鲁棒性实验（课程要求 (4) “robustness under different conditions”）
+
+2026-11-21 已在忽略目录生成并审查九档，逐档校验 0 错误。B0 九档各 100 条预测和指标已核对，暂存 `work/coursework/robust_runs/robust/`。恢复命令及待复用的代码和数据位置见 `runs/logs/robust_B0_recovery.log`。
 
 真实数据里只有遮挡（10 条）和有手（6 条）两种条件，没有光照变化，用户也不再拍新照片。因此对真实测试照片做人工干扰，只做推理、不训练，比较各模型在干扰加重时掉多少。报告里必须写明这是模拟干扰，不是真实拍摄。
 
@@ -210,7 +216,7 @@ $P scripts/data_validate.py data/aug/v1/samples.jsonl
    $P scripts/eval_compare.py --runs-root runs --out runs/comparison
    ```
    `scripts/run_cv.py` 先核对三折固定分组、JSONL 和 manifest 哈希以及全部真实测试样本覆盖，再依次训练、预测、拼接和评测。折内记录在 `runs/cv3_folds/<ID>_fold<k>/`，汇总在 `runs/<ID>_cv3/`。可用原命令重跑并复用完成的 adapter 和预测。改变步数、配置或划分时使用新的 `--runs-root`。
-4. 资源：L40 46GB，单次训练显存约 5.5GiB（512²）；磁盘约剩 9.8GB——**不要保存检查点以外的完整模型**，`save_total_limit` 设 1，跑完删 `checkpoints/` 只留 `adapter/`。
+4. 资源：项目盘已扩容，正式运行前约剩 59 GiB。每折 `save_total_limit` 为 1，折外预测核对后脚本自动清理 `checkpoints/`，保留 `adapter/`。
 
 ### 任务 D：汇总与文档
 
